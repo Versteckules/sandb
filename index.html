@@ -2,45 +2,75 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Panzerknacker III</title>
     <style>
         :root { --bg: #e0e5ec; --accent: #ff5722; --border: 4px solid #000; }
         body { margin: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: 'Courier New', Courier, monospace; }
         
-        #start-screen { text-align: center; border: var(--border); padding: 30px; background: #fff; box-shadow: 6px 6px 0px #000; }
-        h1 { background: var(--accent); color: #fff; padding: 10px; border: var(--border); margin-bottom: 10px; }
-        .by { font-weight: 900; background: #000; color: #fff; padding: 5px; }
-        button { margin-top: 20px; padding: 15px 30px; font-weight: 900; cursor: pointer; border: var(--border); background: var(--accent); color: #fff; }
-        #debug { margin-top: 20px; font-weight: bold; }
+        .screen { display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; }
+        .screen.active { display: flex; }
+        
+        #start-box { text-align: center; border: var(--border); padding: 30px; background: #fff; box-shadow: 6px 6px 0px #000; width: 80%; }
+        h1 { background: var(--accent); color: #fff; padding: 10px; border: var(--border); margin: 0 0 10px 0; }
+        
+        #comp-box { width: 200px; height: 200px; border: var(--border); border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; margin: 20px; }
+        #needle { width: 8px; height: 140px; background: #000; clip-path: polygon(50% 0%, 100% 20%, 50% 100%, 0% 20%); transition: transform 0.1s linear; }
+        #target { width: 160px; height: 160px; border: 4px dashed #ff5722; border-radius: 50%; position: absolute; transition: transform 0.3s; }
+        
+        button { padding: 15px 30px; font-weight: 900; cursor: pointer; border: var(--border); background: var(--accent); color: #fff; }
     </style>
 </head>
 <body>
 
-    <div id="start-screen">
-        <img src="avatar.jpg" alt="Versteckules" style="width:100px; border-radius:50%; border:var(--border);">
-        <h1>Panzerknacker III</h1>
-        <div class="by">by Versteckules</div>
-        <button id="start-btn">Tresor Angreifen</button>
-        <div id="debug">Warte auf Sensor-Freigabe...</div>
+    <div id="start-screen" class="screen active">
+        <div id="start-box">
+            <img src="avatar.jpg" style="width:80px; border-radius:50%; border:var(--border);">
+            <h1>Panzerknacker III</h1>
+            <p>by Versteckules</p>
+            <button id="start-btn">Tresor Angreifen</button>
+        </div>
+    </div>
+
+    <div id="level-1" class="screen">
+        <h2>1. KANAL-SYNC</h2>
+        <div id="comp-box">
+            <div id="target"></div>
+            <div id="needle"></div>
+        </div>
+        <p id="status">Drehe dich, bis die Nadel im Ziel ist!</p>
     </div>
 
     <script>
-        let tComp = 0;
+        let tComp = 0, targetAngle = 180;
 
         document.getElementById('start-btn').onclick = function() {
             if (typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(res => {
-                    if (res === 'granted') window.addEventListener('deviceorientation', handle);
+                    if (res === 'granted') {
+                        window.addEventListener('deviceorientation', handle);
+                        document.getElementById('start-screen').classList.remove('active');
+                        document.getElementById('level-1').classList.add('active');
+                    }
                 });
             } else {
                 window.addEventListener('deviceorientation', handle);
+                document.getElementById('start-screen').classList.remove('active');
+                document.getElementById('level-1').classList.add('active');
             }
         };
 
         function handle(e) {
             tComp = e.webkitCompassHeading || (360 - e.alpha);
-            document.getElementById('debug').innerText = "Winkel: " + Math.round(tComp) + "°";
+            document.getElementById('needle').style.transform = `rotate(${tComp}deg)`;
+            document.getElementById('target').style.transform = `rotate(${targetAngle}deg)`;
+            
+            // Check Sync
+            if (Math.abs(tComp - targetAngle) < 10) {
+                document.getElementById('status').innerText = "SYNC AKTIV!";
+            } else {
+                document.getElementById('status').innerText = "Suche Frequenz...";
+            }
         }
     </script>
 </body>
