@@ -3,47 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Panzerknacker III - Basis</title>
+    <title>Panzerknacker III</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #e0e5ec; margin: 0; }
-        .box { border: 4px solid #000; padding: 30px; background: #fff; box-shadow: 6px 6px 0px #000; text-align: center; }
-        button { padding: 20px 40px; font-size: 20px; font-weight: 900; cursor: pointer; background: #ff5722; color: #fff; border: 4px solid #000; }
-        #debug { margin-top: 20px; font-size: 18px; font-weight: bold; }
+        body { margin: 0; background: #e0e5ec; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .screen { display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; background: #fff; }
+        .screen.active { display: flex; }
+        .box { border: 4px solid #000; padding: 20px; background: #fff; box-shadow: 6px 6px 0px #000; width: 85%; max-width: 300px; text-align: center; }
+        h1 { background: #ff5722; color: #fff; padding: 10px; border: 4px solid #000; margin: 0 0 10px 0; text-transform: uppercase; }
+        button { padding: 15px 30px; font-weight: 900; border: 4px solid #000; background: #ff5722; color: #fff; cursor: pointer; }
+        #needle { width: 8px; height: 100px; background: #d50000; transform-origin: 50% 100%; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h1>Panzerknacker III</h1>
-        <button id="start-btn">Tresor Angreifen</button>
-        <div id="debug">Warte auf Start...</div>
+    <div id="start-screen" class="screen active">
+        <div class="box">
+            <h1>PANZERKNACKER</h1>
+            <button id="start-btn">TRESOR ANGREIFEN</button>
+            <div id="debug" style="font-size:12px; margin-top:10px;">Bereit</div>
+        </div>
+    </div>
+
+    <div id="level-1" class="screen">
+        <div class="box">
+            <h1>K1: UPLINK</h1>
+            <div id="needle"></div>
+            <p id="status">Drehe das Gerät!</p>
+        </div>
     </div>
 
     <script>
-        let sensorData = { alpha: 0 };
+        let sensor = { alpha: 0 };
 
-        function handleSensors(e) {
-            // Die exakte, funktionierende Logik aus deinem Test
-            let comp = e.webkitCompassHeading;
-            sensorData.alpha = (comp !== undefined && comp !== null) ? comp : (360 - e.alpha);
-            document.getElementById('debug').innerText = "Winkel: " + Math.round(sensorData.alpha) + "°";
+        function handle(e) {
+            sensor.alpha = e.webkitCompassHeading || (360 - (e.alpha || 0));
+            document.getElementById('debug').innerText = "Winkel: " + Math.round(sensor.alpha) + "°";
+            
+            // Nadel im Level 1 drehen
+            const needle = document.getElementById('needle');
+            if (needle) needle.style.transform = `rotate(${sensor.alpha}deg)`;
         }
 
         document.getElementById('start-btn').onclick = function() {
-            // 1. Berechtigung anfordern
             if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(state => {
-                    if (state === 'granted') {
-                        window.addEventListener('deviceorientation', handleSensors);
-                        document.getElementById('debug').innerText = "Sensoren aktiv!";
-                    } else {
-                        alert("Berechtigung verweigert!");
+                DeviceOrientationEvent.requestPermission().then(res => {
+                    if (res === 'granted') {
+                        window.addEventListener('deviceorientation', handle);
+                        document.getElementById('start-screen').classList.remove('active');
+                        document.getElementById('level-1').classList.add('active');
                     }
-                }).catch(err => alert("Fehler: " + err));
+                });
             } else {
-                // Für Browser, die keine explizite Erlaubnis brauchen
-                window.addEventListener('deviceorientation', handleSensors);
-                document.getElementById('debug').innerText = "Sensoren aktiv!";
+                window.addEventListener('deviceorientation', handle);
+                document.getElementById('start-screen').classList.remove('active');
+                document.getElementById('level-1').classList.add('active');
             }
         };
     </script>
