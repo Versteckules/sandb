@@ -3,62 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Panzerknacker III</title>
+    <title>Panzerknacker III by Versteckules</title>
     <style>
-        body { margin: 0; background: #e0e5ec; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .screen { display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; background: #fff; }
+        /* TAGESLICHT / HIGH CONTRAST THEME */
+        :root { 
+            --bg-main: #e0e5ec; --bg-screen: #ffffff; --text-main: #000000; 
+            --accent: #ff5722; --success: #00c853; --danger: #d50000; --blue: #2962ff; 
+            --border: 4px solid #000;
+        }
+        
+        body { margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; background: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; user-select: none; touch-action: none; }
+        
+        /* Rugged Industrial Screen Look */
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: calc(100% - 20px); height: calc(100% - 20px); position: absolute; padding: 15px; box-sizing: border-box; text-align: center; background: var(--bg-screen); border: var(--border); box-shadow: 6px 6px 0px rgba(0,0,0,1); border-radius: 4px; margin: 10px; }
         .screen.active { display: flex; }
-        .box { border: 4px solid #000; padding: 20px; background: #fff; box-shadow: 6px 6px 0px #000; width: 85%; max-width: 300px; text-align: center; }
-        h1 { background: #ff5722; color: #fff; padding: 10px; border: 4px solid #000; margin: 0 0 10px 0; text-transform: uppercase; }
-        button { padding: 15px 30px; font-weight: 900; border: 4px solid #000; background: #ff5722; color: #fff; cursor: pointer; }
-        #needle { width: 8px; height: 100px; background: #d50000; transform-origin: 50% 100%; }
+        
+        .avatar { width: 100px; height: 100px; border-radius: 50%; border: var(--border); margin-bottom: 10px; background: #eee; object-fit: cover; box-shadow: 4px 4px 0px rgba(0,0,0,1); }
+        
+        h1 { font-size: 26px; text-transform: uppercase; letter-spacing: 2px; margin: 0; font-weight: 900; background: var(--accent); color: #fff; padding: 5px 15px; border: var(--border); border-radius: 2px; box-shadow: 4px 4px 0px #000; }
+        .by { font-size: 14px; font-weight: 900; letter-spacing: 2px; margin-top: 10px; margin-bottom: 15px; text-transform: uppercase; background: #000; color: #fff; padding: 3px 10px; }
+        h2 { margin: 0 0 10px 0; font-size: 18px; text-transform: uppercase; font-weight: 900; border-bottom: 3px solid #000; padding-bottom: 5px; width: 100%; }
+        
+        .story-box { background: #f8f9fa; border: var(--border); border-left: 8px solid var(--accent); padding: 10px; margin-bottom: 10px; text-align: left; font-size: 13px; font-weight: bold; width: 100%; max-width: 320px; box-shadow: 4px 4px 0px rgba(0,0,0,1); }
+        .story-box span { color: var(--accent); font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 4px; font-size: 12px; }
+        
+        .btn { background: var(--accent); color: #fff; border: var(--border); padding: 12px 24px; font-size: 18px; font-weight: 900; font-family: 'Courier New', Courier, monospace; cursor: pointer; text-transform: uppercase; box-shadow: 4px 4px 0px #000; transition: transform 0.1s, box-shadow 0.1s; margin-top: 5px; }
+        .btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #000; }
+        
+        .lcd { background: #fff; border: var(--border); padding: 8px 12px; width: 100%; max-width: 320px; font-size: 16px; font-weight: 900; margin-bottom: 15px; display: flex; justify-content: space-between; box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1); }
+        
+        #sensor-debug { font-size: 11px; color: #555; margin-top: 15px; font-weight: bold; background: #fff; padding: 6px; border: 2px dashed #000; width: 90%; max-width: 300px; word-wrap: break-word; }
+
+        /* K1: PROGRESSIVE SCANNER */
+        .k1-box { display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px;}
+        .sensor-module { background: #eee; border: var(--border); position: relative; display: flex; justify-content: center; align-items: center; box-shadow: 4px 4px 0px #000; transition: background 0.2s; }
+        .sensor-module.ok { background: var(--success); }
+        .k1-comp { width: 120px; height: 120px; border-radius: 50%; }
+        .k1-comp-tgt { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 6px solid transparent; border-top-color: #000; transition: transform 0.3s; }
+        .k1-comp-ndl { width: 6px; height: 100px; background: linear-gradient(to bottom, var(--danger) 50%, #000 50%); clip-path: polygon(50% 0%, 100% 10%, 100% 90%, 50% 100%, 0% 90%, 0% 10%); }
+        .k1-pitch { width: 35px; height: 120px; display: none; }
+        .k1-pitch-tgt { position: absolute; width: 100%; height: 12px; border-top: 3px solid #000; border-bottom: 3px solid #000; bottom: 0; }
+        .k1-pitch-ind { position: absolute; width: 25px; height: 6px; background: var(--danger); left: 1px; bottom: 50%; border: 2px solid #000;}
+        .k1-roll { width: 180px; height: 35px; display: none; }
+        .k1-roll-tgt { position: absolute; width: 12px; height: 100%; border-left: 3px solid #000; border-right: 3px solid #000; left: 50%; transform: translateX(-50%); }
+        .k1-roll-ind { position: absolute; width: 6px; height: 25px; background: var(--danger); top: 1px; left: 50%; border: 2px solid #000;}
+
+        /* K2: LABYRINTH */
+        #maze-board { width: 280px; height: 300px; background: #fff; border: var(--border); position: relative; overflow: hidden; box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1), 4px 4px 0px #000; }
+        .wall { position: absolute; background: #000; }
+        .hole { position: absolute; background: var(--danger); border: 2px solid #000; border-radius: 50%; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.5); }
+        .goal { position: absolute; background: var(--success); border: 2px solid #000; }
+        #ball { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 2px solid #000; z-index: 10; box-shadow: 2px 2px 0px rgba(0,0,0,0.3); }
+        .shake { animation: shakeAnim 0.3s; background: rgba(213, 0, 0, 0.2) !important; }
+        @keyframes shakeAnim { 10%,90%{transform:translate(-2px,0)} 20%,80%{transform:translate(4px,0)} 30%,50%,70%{transform:translate(-6px,0)} 40%,60%{transform:translate(6px,0)} }
+
+        /* K3: SONAR */
+        .sonar-container { width: 280px; height: 160px; background: #fff; border: var(--border); position: relative; overflow: hidden; box-shadow: 4px 4px 0px #000; }
+        .wave { position: absolute; left: 0; width: 100%; height: 6px; }
+        .wave-tgt { background: rgba(0, 0, 0, 0.2); border-top: 3px dashed #000; top: 50%; }
+        .wave-usr { background: var(--blue); border-top: 3px solid #000; border-bottom: 3px solid #000; top: 50%; }
+
+        /* K4: LASER */
+        .laser-box { width: 280px; height: 200px; background: #fff; border: var(--border); position: relative; overflow: hidden; box-shadow: 4px 4px 0px #000; }
+        .laser-emitter { position: absolute; left: 0; top: 90px; width: 15px; height: 20px; background: #000; }
+        .laser-beam-in { position: absolute; left: 15px; top: 98px; width: 125px; height: 4px; background: var(--danger); transform-origin: left center; }
+        .laser-mirror { position: absolute; left: 130px; top: 80px; width: 10px; height: 40px; background: #ccc; border: 2px solid #000; transform-origin: center; }
+        .laser-beam-out { position: absolute; left: 135px; top: 98px; width: 200px; height: 4px; background: var(--danger); transform-origin: left center; }
+        .laser-target { position: absolute; right: 0; top: 90px; width: 15px; height: 15px; background: var(--success); border: 3px solid #000; border-right: none;}
+
+        /* K5: LOCKPICK */
+        .lock-container { width: 240px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; }
+        .cylinder { width: 180px; height: 180px; border-radius: 50%; border: 6px dashed #000; background: #eee; position: relative; display: flex; justify-content: center; box-shadow: 4px 4px 0px #000; }
+        .shear-line { position: absolute; top: 40%; left: 10%; width: 80%; height: 6px; background: rgba(0,0,0,0.1); border-top: 3px dashed #000; z-index: 5; }
+        .shear-line.active { background: var(--success); border-top: 3px solid #000; }
+        .pin-chamber { position: absolute; top: 10%; width: 30px; height: 80%; background: #fff; border: 3px solid #000; border-radius: 15px; overflow: hidden; display: flex; align-items: flex-end; }
+        .pin { width: 100%; height: 40px; background: var(--blue); border-top: 4px solid #000; border-radius: 8px; margin-bottom: 0; }
+
+        /* K6: GEIGER */
+        .k6-radar { width: 200px; height: 200px; border-radius: 50%; border: var(--border); background: #fff; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: 4px 4px 0px #000; }
+        .k6-sweep { width: 50%; height: 4px; background: var(--accent); position: absolute; left: 50%; transform-origin: left center; animation: radar 2s linear infinite; }
+        @keyframes radar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .k6-core { width: 30px; height: 30px; border-radius: 50%; background: #fff; border: var(--border); z-index: 5; }
+        .k6-dots { display: flex; gap: 15px; margin-top: 15px; }
+        .k6-dot { width: 20px; height: 20px; border-radius: 50%; border: 3px solid #000; background: #fff; }
+        .k6-dot.found { background: var(--success); }
     </style>
 </head>
 <body>
 
     <div id="start-screen" class="screen active">
-        <div class="box">
-            <h1>PANZERKNACKER</h1>
-            <button id="start-btn">TRESOR ANGREIFEN</button>
-            <div id="debug" style="font-size:12px; margin-top:10px;">Bereit</div>
+        <img src="avatar.jpg" alt="Versteckules" class="avatar" onerror="this.style.display='none'">
+        <h1>Panzerknacker III</h1>
+        <div class="by">by Versteckules</div>
+        
+        <div class="story-box">
+            <span>Mission Aegis-Kern</span>
+            Der Tresor nutzt 6 mechanische Sicherheitsschichten. Dein Gerät dient als Einbruchswerkzeug. Steuere ALLES durch exaktes Neigen und Drehen im Raum (Kompass & Gyroskop).
         </div>
+        
+        <button class="btn" onclick="initSystem()">Tresor Angreifen</button>
+        <div id="sensor-debug">Warte auf Sensor-Start...</div>
     </div>
 
     <div id="level-1" class="screen">
-        <div class="box">
-            <h1>K1: UPLINK</h1>
-            <div id="needle"></div>
-            <p id="status">Drehe das Gerät!</p>
+        <h2>1. Satelliten-Uplink</h2>
+        <div class="story-box">
+            <span>Kommunikation</span>
+            <span id="k1-instr" style="color:#000; text-transform:none;">Stufe 1: Drehe dich (Kompass), bis die Nadel auf das Ziel zeigt.</span>
+        </div>
+        <div class="lcd"><span id="l1-txt">ACHSE: 1/3</span><span id="l1-sync" style="color:var(--danger)">0%</span></div>
+        <div class="k1-box">
+            <div class="sensor-module k1-comp" id="mod-c"><div class="k1-comp-tgt" id="k1-tgt-c"></div><div class="k1-comp-ndl" id="k1-ndl-c"></div></div>
+            <div class="sensor-module k1-pitch" id="mod-p"><div class="k1-pitch-tgt" id="k1-tgt-p"></div><div class="k1-pitch-ind" id="k1-ind-p"></div></div>
+        </div>
+        <div class="sensor-module k1-roll" id="mod-r"><div class="k1-roll-tgt" id="k1-tgt-r"></div><div class="k1-roll-ind" id="k1-ind-r"></div></div>
+    </div>
+
+    <div id="level-2" class="screen">
+        <h2>2. Zylinder-Labyrinth</h2>
+        <div class="story-box">
+            <span>Mechanische Sperre</span>
+            Balanciere den Hacker-Bot (blau) zum grünen Port. Das Eis ist extrem rutschig. Ein Absturz (rote Löcher) löst Alarm aus!
+        </div>
+        <div class="lcd"><span id="l2-txt">EBENE: 1/3</span><span id="l2-status" style="color:var(--success)">BEREIT</span></div>
+        <div id="maze-board"><div id="ball"></div></div>
+    </div>
+
+    <div id="level-3" class="screen">
+        <h2>3. Akustik-Siegel</h2>
+        <div class="story-box">
+            <span>Glas-Resonanz</span>
+            Die Zielfrequenz (schwarz) schwankt! Kippe das Handy vor/zurück, um deine Welle (blau) exakt darüber zu legen. Halte den Ton 3 Sekunden stabil.
+        </div>
+        <div class="lcd"><span id="l3-txt">SYNC STATUS</span><span id="l3-val" style="color:var(--danger)">ERR</span></div>
+        <div class="sonar-container">
+            <div class="wave wave-tgt" id="wave-tgt"></div>
+            <div class="wave wave-usr" id="wave-usr"></div>
         </div>
     </div>
 
-    <script>
-        let sensor = { alpha: 0 };
+    <div id="level-4" class="screen">
+        <h2>4. Lichtschranke</h2>
+        <div class="story-box">
+            <span>Optischer Sensor</span>
+            Der Empfänger (grün) bewegt sich! Kippe das Handy nach links/rechts (Wasserwaage), um den Spiegel zu drehen und den Laserstrahl ins Ziel zu zwingen.
+        </div>
+        <div class="lcd"><span id="l4-txt">UPLOAD</span><span id="l4-val" style="color:var(--danger)">0%</span></div>
+        <div class="laser-box">
+            <div class="laser-emitter"></div>
+            <div class="laser-beam-in"></div>
+            <div class="laser-mirror" id="laser-mirror"></div>
+            <div class="laser-beam-out" id="laser-beam-out"></div>
+            <div class="laser-target" id="laser-target"></div>
+        </div>
+    </div>
 
-        function handle(e) {
-            sensor.alpha = e.webkitCompassHeading || (360 - (e.alpha || 0));
-            document.getElementById('debug').innerText = "Winkel: " + Math.round(sensor.alpha) + "°";
+    <div id="level-5" class="screen">
+        <h2>5. Not-Verriegelung</h2>
+        <div class="story-box">
+            <span>Feinmechanik</span>
+            Kippe nach VORN, um den Pin genau auf die grüne Linie zu heben. WENN er sitzt, kippe nach RECHTS, um den Zylinder zu drehen. Verrutschen = Absturz!
+        </div>
+        <div class="lcd"><span id="l5-txt">BOLZEN: 1/3</span><span id="l5-status" style="color:var(--blue)">LOCKED</span></div>
+        <div class="lock-container">
+            <div class="cylinder" id="cylinder">
+                <div class="shear-line" id="shear-line"></div>
+                <div class="pin-chamber"><div class="pin" id="lock-pin"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="level-6" class="screen">
+        <h2>6. Kern-Strahlung</h2>
+        <div class="story-box">
+            <span>Radioaktive Signatur</span>
+            Finde die 3 Bolzen im Raum (360°). Drehe dich! Wenn das Piepen alarmierend schnell wird, hast du das Ziel. Button drücken!
+        </div>
+        <div class="lcd"><span id="l6-status" style="color:var(--text-main)">SUCHEN...</span></div>
+        <div class="k6-radar" id="k6-radar"><div class="k6-sweep"></div><div class="k6-core" id="k6-core"></div></div>
+        <div class="k6-dots"><div class="k6-dot" id="k6-d1"></div><div class="k6-dot" id="k6-d2"></div><div class="k6-dot" id="k6-d3"></div></div>
+        <button class="btn" onclick="k6Extract()">ENTRIEGELN</button>
+    </div>
+
+    <div id="final-screen" class="screen">
+        <h1 style="background:var(--success); color:#fff; font-size:30px;">TRESOR OFFEN</h1>
+        <div class="story-box" style="border-color: var(--success); border-left-color: var(--success); margin-top:20px;">
+            <span>Mission Erfolgreich</span>
+            Alle Sicherheitssysteme wurden überbrückt. Das Gehäuse ist offen. Hier sind die Zielkoordinaten für deinen Fund:
+        </div>
+        <div class="lcd" style="justify-content: center; font-size: 20px; padding: 20px; color: #000; border-color:var(--success);" id="coords-display"></div>
+    </div>
+
+    <script>
+        const SECRET = "TiA1MMKwIDE4LjUwMCcgRSAwMTHCsCA1Ny4zMzMn"; 
+        
+        let tX=0, tY=0, tComp=0, sX=0, sY=0, sComp=0;
+        let activeReq = null, activeInt = null;
+        let audioCtx, osc, gainNode, isAudioReady = false;
+
+        // --- BOMBENSICHERE SENSOR LOGIK ---
+        function handleSensors(e) {
+            // Nur überschreiben, wenn echte Werte kommen
+            if (e.gamma !== null && e.gamma !== undefined) tX = e.gamma; 
+            if (e.beta !== null && e.beta !== undefined) tY = e.beta;
             
-            // Nadel im Level 1 drehen
-            const needle = document.getElementById('needle');
-            if (needle) needle.style.transform = `rotate(${sensor.alpha}deg)`;
+            let comp = e.webkitCompassHeading;
+            let alpha = e.alpha;
+
+            if (comp !== null && comp !== undefined) {
+                tComp = comp;
+            } else if (alpha !== null && alpha !== undefined) {
+                tComp = 360 - alpha;
+            }
+
+            let debug = document.getElementById('sensor-debug');
+            if(debug) debug.innerText = `Sensoren aktiv: C:${Math.floor(tComp)}° P:${Math.floor(tY)}° R:${Math.floor(tX)}°`;
         }
 
-        document.getElementById('start-btn').onclick = function() {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(res => {
-                    if (res === 'granted') {
-                        window.addEventListener('deviceorientation', handle);
-                        document.getElementById('start-screen').classList.remove('active');
-                        document.getElementById('level-1').classList.add('active');
+        // --- DER FIX: INITIALISIERUNG IN DER RICHTIGEN REIHENFOLGE ---
+        function initSystem() {
+            // 1. Audio bereit machen (User Gesture)
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if(AudioContext && !audioCtx) {
+                    audioCtx = new AudioContext(); 
+                    osc = audioCtx.createOscillator(); 
+                    gainNode = audioCtx.createGain();
+                    osc.connect(gainNode); 
+                    gainNode.connect(audioCtx.destination);
+                    osc.type = 'sine'; 
+                    gainNode.gain.value = 0; 
+                    osc.start(); 
+                    isAudioReady = true;
+                }
+                if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (e) { console.log("Audio Error"); }
+
+            // 2. Sensor SOFORT anfragen
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(state => {
+                    if (state === 'granted') {
+                        window.addEventListener('deviceorientation', handleSensors);
+                        startK1();
+                    } else {
+                        alert("Sensor-Berechtigung verweigert!");
                     }
-                });
+                }).catch(err => { alert("Fehler: " + err); });
             } else {
-                window.addEventListener('deviceorientation', handle);
-                document.getElementById('start-screen').classList.remove('active');
-                document.getElementById('level-1').classList.add('active');
+                window.addEventListener('deviceorientation', handleSensors);
+                startK1();
             }
-        };
+        }
+
+        // --- AUDIO HELPERS ---
+        function playSound(freq, type='sine', vol=0.1) {
+            if(!isAudioReady) return;
+            osc.type = type; 
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.02);
+        }
+        
+        function stopSound() { 
+            if(isAudioReady) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.02); 
+        }
+        
+        function haptic(ms) { 
+            if (navigator.vibrate) navigator.vibrate(ms); 
+        }
+
+        // --- SMOOTHING (Sichert gegen NaN ab) ---
+        function smooth() {
+            if(isNaN(tX)) tX=0; if(isNaN(tY)) tY=0; if(isNaN(tComp)) tComp=0;
+            
+            // Verhindert das Einfrieren in den ersten Millisekunden
+            if(isNaN(sX)) sX = tX;
+            if(isNaN(sY)) sY = tY;
+            if(isNaN(sComp)) sComp = tComp;
+
+            sX += (tX - sX) * 0.15;
+            sY += (tY - sY) * 0.15;
+            
+            let d = tComp - sComp;
+            if (d > 180) d -= 360;
+            if (d < -180) d += 360;
+            sComp = (sComp + d * 0.15 + 360) % 360;
+            
+            if(isNaN(sComp)) sComp = 0;
+        }
+
+        function changeScreen(from, to) {
+            cancelAnimationFrame(activeReq); clearInterval(activeInt); stopSound();
+            document.getElementById(from).classList.remove('active'); document.getElementById(to).classList.add('active');
+        }
+
+        // ==========================================
+        // K1: UPLINK
+        // ==========================================
+        let k1_stage=1, k1_sync=0, tgC=0, tgP=0, tgR=0;
+        
+        function startK1() { changeScreen('start-screen', 'level-1'); k1SetTarget(); activeInt = setInterval(k1Loop, 30); }
+        
+        function k1SetTarget() {
+            tgC = Math.floor(Math.random()*360); tgP = Math.floor(Math.random()*40)+20; tgR = Math.floor(Math.random()*40)-20;
+            document.getElementById('k1-tgt-c').style.transform = `rotate(${tgC}deg)`;
+            document.getElementById('k1-tgt-p').style.bottom = `${(tgP/90)*110}px`;
+            document.getElementById('k1-tgt-r').style.left = `${50 + (tgR/90)*100}%`;
+            
+            if(k1_stage === 1) { document.getElementById('k1-pitch').style.display = 'none'; document.getElementById('k1-roll').style.display = 'none'; }
+            if(k1_stage === 2) { document.getElementById('k1-pitch').style.display = 'block'; document.getElementById('k1-instr').innerText = "Stufe 2: Zusätzlich Neigung nach vorn/hinten."; }
+            if(k1_stage === 3) { document.getElementById('k1-roll').style.display = 'block'; document.getElementById('k1-instr').innerText = "Stufe 3: Zusätzlich Wasserwaage (links/rechts kippen)."; }
+        }
+        
+        function k1Loop() {
+            smooth();
+            document.getElementById('k1-ndl-c').style.transform = `rotate(${-sComp}deg)`;
+            let dP = Math.max(0, Math.min(90, sY)); document.getElementById('k1-ind-p').style.bottom = `${(dP/90)*116}px`;
+            let dR = Math.max(-90, Math.min(90, sX)); document.getElementById('k1-ind-r').style.left = `${50 + (dR/90)*100}%`;
+
+            let diffC = Math.abs(sComp - tgC); if(diffC > 180) diffC = 360 - diffC;
+            let okC = diffC < 8; let okP = Math.abs(dP - tgP) < 8; let okR = Math.abs(dR - tgR) < 8;
+            
+            document.getElementById('mod-c').className = `sensor-module k1-comp ${okC ? 'ok' : ''}`;
+            if(k1_stage >= 2) document.getElementById('mod-p').className = `sensor-module k1-pitch ${okP ? 'ok' : ''}`;
+            if(k1_stage >= 3) document.getElementById('mod-r').className = `sensor-module k1-roll ${okR ? 'ok' : ''}`;
+
+            let isOk = okC;
+            if(k1_stage >= 2) isOk = isOk && okP;
+            if(k1_stage >= 3) isOk = isOk && okR;
+
+            if (isOk) { k1_sync += 1.5; document.getElementById('l1-sync').style.color = 'var(--success)'; playSound(800, 'sine', 0.05); } 
+            else { k1_sync = Math.max(0, k1_sync - 2); document.getElementById('l1-sync').style.color = 'var(--danger)'; stopSound(); }
+
+            document.getElementById('l1-sync').innerText = `${Math.floor(k1_sync)}%`;
+            if (k1_sync >= 100) {
+                k1_sync = 0; k1_stage++; playSound(1200, 'square', 0.1); setTimeout(stopSound, 200); haptic(200);
+                if (k1_stage <= 3) { document.getElementById('l1-txt').innerText = `ACHSE: ${k1_stage}/3`; k1SetTarget(); } 
+                else startK2();
+            }
+        }
+
+        // ==========================================
+        // K2: LABYRINTH
+        // ==========================================
+        let k2_stage=0, ball={x:20, y:150, vx:0, vy:0, r:6}, isFalling=false;
+        
+        const mazes = [
+            { start:{x:20,y:150}, goal:{x:220,y:140,w:40,h:40}, walls:[{x:0,y:0,w:280,h:120}, {x:0,y:200,w:280,h:120}], holes:[{x:90,y:125,r:22}, {x:170,y:195,r:22}] }, 
+            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:0,y:100,w:200,h:20}, {x:80,y:200,w:200,h:20}], holes:[{x:240,y:40,r:25}, {x:40,y:150,r:25}, {x:240,y:250,r:25}] },
+            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:70,y:0,w:15,h:250}, {x:140,y:70,w:15,h:250}, {x:210,y:0,w:15,h:220}], holes:[{x:35,y:150,r:18}, {x:105,y:200,r:18}, {x:175,y:100,r:18}] }
+        ];
+
+        function startK2() { changeScreen('level-1', 'level-2'); k2Load(); activeReq = requestAnimationFrame(k2Loop); }
+        function k2Load() {
+            const m = mazes[k2_stage]; const board = document.getElementById('maze-board');
+            board.innerHTML = '<div id="ball"></div>'; ball.x = m.start.x; ball.y = m.start.y; ball.vx=0; ball.vy=0;
+            m.walls.forEach(w => { let d=document.createElement('div'); d.className='wall'; d.style.left=w.x+'px'; d.style.top=w.y+'px'; d.style.width=w.w+'px'; d.style.height=w.h+'px'; board.appendChild(d); });
+            m.holes.forEach(h => { let d=document.createElement('div'); d.className='hole'; d.style.left=(h.x-h.r)+'px'; d.style.top=(h.y-h.r)+'px'; d.style.width=(h.r*2)+'px'; d.style.height=(h.r*2)+'px'; board.appendChild(d); });
+            let g=document.createElement('div'); g.className='goal'; g.style.left=m.goal.x+'px'; g.style.top=m.goal.y+'px'; g.style.width=m.goal.w+'px'; g.style.height=m.goal.h+'px'; board.appendChild(g);
+            document.getElementById('l2-txt').innerText = `EBENE: ${k2_stage+1}/3`;
+        }
+        function k2Wall(nx, ny) {
+            if(nx<0 || ny<0 || nx+12>280 || ny+12>300) return true;
+            for(let w of mazes[k2_stage].walls) { if(nx+12>w.x && nx<w.x+w.w && ny+12>w.y && ny<w.y+w.h) return true; } return false;
+        }
+        function k2Loop() {
+            if(isFalling) return; smooth();
+            ball.vx += sX * 0.05; ball.vy += sY * 0.05; ball.vx *= 0.90; ball.vy *= 0.90; 
+            if(!k2Wall(ball.x+ball.vx, ball.y)) ball.x += ball.vx; else { ball.vx = -ball.vx*0.3; } 
+            if(!k2Wall(ball.x, ball.y+ball.vy)) ball.y += ball.vy; else { ball.vy = -ball.vy*0.3; }
+            const bD = document.getElementById('ball'); bD.style.left=ball.x+'px'; bD.style.top=ball.y+'px';
+            let cx = ball.x+ball.r, cy = ball.y+ball.r; const m = mazes[k2_stage];
+            for(let h of m.holes) {
+                if(Math.hypot(cx-h.x, cy-h.y) < h.r - 2) {
+                    isFalling=true; playSound(100, 'sawtooth', 0.2); haptic([200,50,200]);
+                    document.getElementById('maze-board').classList.add('shake');
+                    document.getElementById('l2-status').innerText = "ABSTURZ!"; document.getElementById('l2-status').style.color = "var(--danger)";
+                    setTimeout(()=>{ document.getElementById('maze-board').classList.remove('shake'); document.getElementById('l2-status').innerText = "BEREIT"; document.getElementById('l2-status').style.color = "var(--success)"; stopSound(); ball.x=m.start.x; ball.y=m.start.y; ball.vx=0; ball.vy=0; isFalling=false; activeReq=requestAnimationFrame(k2Loop); }, 800);
+                    return;
+                }
+            }
+            if(cx>m.goal.x && cx<m.goal.x+m.goal.w && cy>m.goal.y && cy<m.goal.y+m.goal.h) {
+                k2_stage++; playSound(800, 'square', 0.1); setTimeout(stopSound, 200); haptic(300);
+                if(k2_stage<3) k2Load(); else { startK3(); return; }
+            }
+            activeReq = requestAnimationFrame(k2Loop);
+        }
+
+        // ==========================================
+        // K3: SONAR
+        // ==========================================
+        let k3_hold = 0;
+        function startK3() { changeScreen('level-2', 'level-3'); activeInt = setInterval(k3Loop, 30); }
+        function k3Loop() {
+            smooth();
+            let tgFreq = 400 + Math.sin(Date.now() / 1500) * 200; 
+            let pitch = Math.max(-90, Math.min(90, sY));
+            let usrFreq = 400 + (pitch * 5); 
+            playSound(usrFreq, 'sine', 0.1); 
+            document.getElementById('wave-tgt').style.top = `${(tgFreq/800)*100}%`;
+            document.getElementById('wave-usr').style.top = `${(usrFreq/800)*100}%`;
+            let diff = Math.abs(usrFreq - tgFreq);
+            if(diff < 10) { 
+                k3_hold += 30; document.getElementById('l3-val').innerText = "SYNCED"; document.getElementById('l3-val').style.color = "var(--success)";
+                if(k3_hold >= 3000) { k3_hold = 0; stopSound(); startK4(); } 
+            } else {
+                k3_hold = 0; document.getElementById('l3-val').innerText = `${Math.floor(diff)} Hz DIFF`; document.getElementById('l3-val').style.color = "var(--danger)";
+            }
+        }
+
+        // ==========================================
+        // K4: LASER
+        // ==========================================
+        let k4_stage = 0, k4_hold = 0;
+        function startK4() { changeScreen('level-3', 'level-4'); document.getElementById('l4-txt').innerText = `UPLOAD: 1/3`; activeInt = setInterval(k4Loop, 30); }
+        function k4Loop() {
+            smooth();
+            let angle = Math.max(-40, Math.min(40, sX * 1.5));
+            document.getElementById('laser-mirror').style.transform = `rotate(${angle}deg)`;
+            let outAngle = angle * 2;
+            document.getElementById('laser-beam-out').style.transform = `rotate(${outAngle}deg)`;
+            let speed = (k4_stage + 1) * 600;
+            let tgY = 90 + Math.sin(Date.now() / speed) * 80;
+            document.getElementById('laser-target').style.top = `${tgY}px`;
+            let hitY = Math.tan(outAngle * Math.PI / 180) * 135 + 98; 
+            if(hitY > tgY && hitY < tgY + 15) { 
+                k4_hold += 30; document.getElementById('l4-val').innerText = `${Math.floor((k4_hold/1500)*100)}%`; document.getElementById('l4-val').style.color = "var(--success)";
+                playSound(600 + k4_hold, 'triangle', 0.05);
+                if(k4_hold >= 1500) { 
+                    k4_hold = 0; k4_stage++; stopSound(); haptic(200);
+                    if(k4_stage < 3) document.getElementById('l4-txt').innerText = `UPLOAD: ${k4_stage+1}/3`; else startK5();
+                }
+            } else {
+                k4_hold = 0; document.getElementById('l4-val').innerText = "NO SIGNAL"; document.getElementById('l4-val').style.color = "var(--danger)"; stopSound();
+            }
+        }
+
+        // ==========================================
+        // K5: LOCKPICK
+        // ==========================================
+        let k5_stage = 0;
+        function startK5() { changeScreen('level-4', 'level-5'); activeInt = setInterval(k5Loop, 30); }
+        function k5Loop() {
+            smooth();
+            let lift = Math.max(0, Math.min(100, ((sY + 45) / 90) * 100)); 
+            document.getElementById('lock-pin').style.marginBottom = `${lift}%`;
+            let isSet = (lift > 36 && lift < 44); 
+            if(isSet) document.getElementById('shear-line').classList.add('active'); else document.getElementById('shear-line').classList.remove('active');
+            let tension = Math.max(0, Math.min(90, sX));
+            document.getElementById('cylinder').style.transform = `rotate(${tension}deg)`;
+            if(tension > 15 && !isSet) {
+                playSound(100, 'sawtooth', 0.2); haptic(300); document.getElementById('cylinder').style.background = "var(--danger)";
+                setTimeout(() => document.getElementById('cylinder').style.background = "#eee", 200);
+                document.getElementById('l5-status').innerText = "ABGERUTSCHT!"; document.getElementById('l5-status').style.color = "var(--danger)";
+            } else if (tension > 80 && isSet) {
+                k5_stage++; playSound(1000, 'square', 0.1); setTimeout(stopSound, 200); haptic([50,50,50]);
+                if(k5_stage < 3) { document.getElementById('l5-txt').innerText = `BOLZEN: ${k5_stage+1}/3`; document.getElementById('l5-status').innerText = "SITZT!"; document.getElementById('l5-status').style.color = "var(--success)"; }
+                else startK6();
+            } else {
+                document.getElementById('l5-status').innerText = "DREHEN..."; document.getElementById('l5-status').style.color = "var(--blue)"; stopSound();
+            }
+        }
+
+        // ==========================================
+        // K6: GEIGERZÄHLER
+        // ==========================================
+        let k6_tgts = [], k6_stage = 0, k6_dist = 180;
+        function startK6() { changeScreen('level-5', 'level-6'); k6_tgts=[Math.floor(Math.random()*360), Math.floor(Math.random()*360), Math.floor(Math.random()*360)]; activeInt = setInterval(k6Loop, 50); }
+        function k6Loop() {
+            smooth();
+            let tg = k6_tgts[k6_stage]; k6_dist = Math.abs(sComp - tg); if(k6_dist > 180) k6_dist = 360 - k6_dist;
+            let core = document.getElementById('k6-core'); let status = document.getElementById('l6-status');
+            if(k6_dist < 5) { 
+                core.style.background = "var(--danger)"; core.style.transform = "scale(1.5)"; status.innerText = "ZIEL GEFUNDEN!"; status.style.color = "var(--danger)"; 
+                playSound(1000, 'square', 0.1); 
+            } else if(k6_dist < 40) { 
+                let intensity = 1 - (k6_dist/40);
+                core.style.background = "var(--accent)"; core.style.transform = `scale(${1 + intensity*0.5})`; status.innerText = "SUCHE..."; status.style.color = "var(--accent)";
+                if(Math.random() < intensity) { playSound(600, 'square', 0.1); setTimeout(stopSound, 50); haptic(20); } else stopSound();
+            } else { 
+                core.style.background = "#fff"; core.style.transform = "scale(1)"; status.innerText = "SCANNEN..."; status.style.color = "var(--text-main)"; stopSound();
+            }
+        }
+        function k6Extract() {
+            if(k6_dist < 5) {
+                document.getElementById(`k6-d${k6_stage+1}`).classList.add('found');
+                k6_stage++; playSound(1200, 'sine', 0.2); setTimeout(stopSound, 300); haptic([100,50,100]);
+                if(k6_stage >= 3) showFinal();
+            } else {
+                playSound(100, 'sawtooth', 0.2); setTimeout(stopSound, 300); haptic(400);
+                document.getElementById('k6-radar').style.background = "rgba(213,0,0,0.2)"; setTimeout(()=>document.getElementById('k6-radar').style.background = "#fff", 400);
+            }
+        }
+
+        // ==========================================
+        // FINAL
+        // ==========================================
+        function showFinal() { changeScreen('level-6', 'final-screen'); document.getElementById('coords-display').innerText = atob(SECRET); playSound(800, 'sine', 0.2); setTimeout(()=>playSound(1200, 'sine', 0.2), 200); setTimeout(stopSound, 600); haptic([200,100,200,100,500]);}
     </script>
 </body>
 </html>
