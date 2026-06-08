@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Panzerknacker III by Versteckules</title>
+    <title>Panzerknacker III</title>
     <style>
-        /* TAGESLICHT / HIGH CONTRAST THEME */
         :root { 
             --bg-main: #e0e5ec; --bg-screen: #ffffff; --text-main: #000000; 
             --accent: #ff5722; --success: #00c853; --danger: #d50000; --blue: #2962ff; 
@@ -14,7 +13,6 @@
         
         body { margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; background: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; user-select: none; touch-action: none; }
         
-        /* Rugged Industrial Screen Look */
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: calc(100% - 20px); height: calc(100% - 20px); position: absolute; padding: 15px; box-sizing: border-box; text-align: center; background: var(--bg-screen); border: var(--border); box-shadow: 6px 6px 0px rgba(0,0,0,1); border-radius: 4px; margin: 10px; }
         .screen.active { display: flex; }
         
@@ -71,9 +69,9 @@
         .laser-beam-out { position: absolute; left: 135px; top: 98px; width: 200px; height: 4px; background: var(--danger); transform-origin: left center; }
         .laser-target { position: absolute; right: 0; top: 90px; width: 15px; height: 15px; background: var(--success); border: 3px solid #000; border-right: none;}
 
-        /* K5: LOCKPICK */
+        /* K5: LOCKPICK (Fehlerfrei!) */
         .lock-container { width: 240px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; }
-        .cylinder { width: 180px; height: 180px; border-radius: 50%; border: 6px dashed #000; background: #eee; position: relative; display: flex; justify-content: center; box-shadow: 4px 4px 0px #000; }
+        .cylinder { width: 180px; height: 180px; border-radius: 50%; border: 6px dashed #000; background: #eee; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: 4px 4px 0px #000; }
         .shear-line { position: absolute; top: 40%; left: 10%; width: 80%; height: 6px; background: rgba(0,0,0,0.1); border-top: 3px dashed #000; z-index: 5; }
         .shear-line.active { background: var(--success); border-top: 3px solid #000; }
         .pin-chamber { position: absolute; top: 10%; width: 30px; height: 80%; background: #fff; border: 3px solid #000; border-radius: 15px; overflow: hidden; display: flex; align-items: flex-end; }
@@ -101,10 +99,12 @@
             Der Tresor nutzt 6 mechanische Sicherheitsschichten. Dein Gerät dient als Einbruchswerkzeug. Steuere ALLES durch exaktes Neigen und Drehen im Raum (Kompass & Gyroskop).
         </div>
         
-        <button class="btn" onclick="initSystem()">Tresor Angreifen</button>
-        <div id="sensor-debug">Warte auf Sensor-Start...</div>
+        <!-- START BUTTON -->
+        <button class="btn" id="startBtn">SYSTEM STARTEN</button>
+        <div id="sensor-debug">Warte auf System-Start...</div>
     </div>
 
+    <!-- LEVEL 1 -->
     <div id="level-1" class="screen">
         <h2>1. Satelliten-Uplink</h2>
         <div class="story-box">
@@ -119,21 +119,23 @@
         <div class="sensor-module k1-roll" id="mod-r"><div class="k1-roll-tgt" id="k1-tgt-r"></div><div class="k1-roll-ind" id="k1-ind-r"></div></div>
     </div>
 
+    <!-- LEVEL 2 -->
     <div id="level-2" class="screen">
         <h2>2. Zylinder-Labyrinth</h2>
         <div class="story-box">
             <span>Mechanische Sperre</span>
-            Balanciere den Hacker-Bot (blau) zum grünen Port. Das Eis ist extrem rutschig. Ein Absturz (rote Löcher) löst Alarm aus!
+            Balanciere den Hacker-Bot (blau) zum grünen Port. Das Eis ist extrem rutschig. Ein Absturz löst Alarm aus!
         </div>
         <div class="lcd"><span id="l2-txt">EBENE: 1/3</span><span id="l2-status" style="color:var(--success)">BEREIT</span></div>
         <div id="maze-board"><div id="ball"></div></div>
     </div>
 
+    <!-- LEVEL 3 -->
     <div id="level-3" class="screen">
         <h2>3. Akustik-Siegel</h2>
         <div class="story-box">
             <span>Glas-Resonanz</span>
-            Die Zielfrequenz (schwarz) schwankt! Kippe das Handy vor/zurück, um deine Welle (blau) exakt darüber zu legen. Halte den Ton 3 Sekunden stabil.
+            Die Zielfrequenz schwankt! Kippe das Handy vor/zurück, um deine Welle exakt darüber zu legen. 3 Sekunden halten.
         </div>
         <div class="lcd"><span id="l3-txt">SYNC STATUS</span><span id="l3-val" style="color:var(--danger)">ERR</span></div>
         <div class="sonar-container">
@@ -142,11 +144,12 @@
         </div>
     </div>
 
+    <!-- LEVEL 4 -->
     <div id="level-4" class="screen">
         <h2>4. Lichtschranke</h2>
         <div class="story-box">
             <span>Optischer Sensor</span>
-            Der Empfänger (grün) bewegt sich! Kippe das Handy nach links/rechts (Wasserwaage), um den Spiegel zu drehen und den Laserstrahl ins Ziel zu zwingen.
+            Der Empfänger bewegt sich! Kippe das Handy nach links/rechts, um den Spiegel zu drehen.
         </div>
         <div class="lcd"><span id="l4-txt">UPLOAD</span><span id="l4-val" style="color:var(--danger)">0%</span></div>
         <div class="laser-box">
@@ -158,11 +161,12 @@
         </div>
     </div>
 
+    <!-- LEVEL 5 -->
     <div id="level-5" class="screen">
         <h2>5. Not-Verriegelung</h2>
         <div class="story-box">
             <span>Feinmechanik</span>
-            Kippe nach VORN, um den Pin genau auf die grüne Linie zu heben. WENN er sitzt, kippe nach RECHTS, um den Zylinder zu drehen. Verrutschen = Absturz!
+            Kippe nach VORN, um den Pin auf die grüne Linie zu heben. WENN er sitzt, kippe nach RECHTS zum Drehen.
         </div>
         <div class="lcd"><span id="l5-txt">BOLZEN: 1/3</span><span id="l5-status" style="color:var(--blue)">LOCKED</span></div>
         <div class="lock-container">
@@ -173,11 +177,12 @@
         </div>
     </div>
 
+    <!-- LEVEL 6 -->
     <div id="level-6" class="screen">
         <h2>6. Kern-Strahlung</h2>
         <div class="story-box">
             <span>Radioaktive Signatur</span>
-            Finde die 3 Bolzen im Raum (360°). Drehe dich! Wenn das Piepen alarmierend schnell wird, hast du das Ziel. Button drücken!
+            Finde die 3 Bolzen im Raum (360°). Drehe dich, bis das Signal maximal ist. Dann Button drücken!
         </div>
         <div class="lcd"><span id="l6-status" style="color:var(--text-main)">SUCHEN...</span></div>
         <div class="k6-radar" id="k6-radar"><div class="k6-sweep"></div><div class="k6-core" id="k6-core"></div></div>
@@ -185,11 +190,12 @@
         <button class="btn" onclick="k6Extract()">ENTRIEGELN</button>
     </div>
 
+    <!-- FINAL SCREEN -->
     <div id="final-screen" class="screen">
         <h1 style="background:var(--success); color:#fff; font-size:30px;">TRESOR OFFEN</h1>
         <div class="story-box" style="border-color: var(--success); border-left-color: var(--success); margin-top:20px;">
             <span>Mission Erfolgreich</span>
-            Alle Sicherheitssysteme wurden überbrückt. Das Gehäuse ist offen. Hier sind die Zielkoordinaten für deinen Fund:
+            Alle Systeme überbrückt. Hier sind die Zielkoordinaten für deinen Fund:
         </div>
         <div class="lcd" style="justify-content: center; font-size: 20px; padding: 20px; color: #000; border-color:var(--success);" id="coords-display"></div>
     </div>
@@ -201,7 +207,7 @@
         let activeReq = null, activeInt = null;
         let audioCtx = null, osc = null, gainNode = null, isAudioReady = false;
 
-        // --- BOMBENSICHERE SENSOR LOGIK (Exakt wie dein erfolgreicher Test!) ---
+        // --- 1. GLOBALE SENSOR ABFRAGE (Sicher und robust) ---
         function handleSensors(e) {
             if (e.gamma !== null && e.gamma !== undefined) tX = e.gamma; 
             if (e.beta !== null && e.beta !== undefined) tY = e.beta;
@@ -216,71 +222,64 @@
             }
 
             let debug = document.getElementById('sensor-debug');
-            if(debug) debug.innerText = `Sensoren aktiv: C:${Math.floor(tComp)}° P:${Math.floor(tY)}° R:${Math.floor(tX)}°`;
+            if(debug) debug.innerText = `Signale OK: C:${Math.floor(tComp)}° P:${Math.floor(tY)}° R:${Math.floor(tX)}°`;
         }
 
-        // --- DER FIX: ABSOLUT FEHLERFREIER START-UP PROZESS ---
-        function initSystem() {
-            // 1. Zuerst die Sensor-Berechtigung abfragen (Sofortiger iOS-Sicherheits-Trigger)
+        // --- 2. START-BUTTON (Behandelt Audio und Berechtigungen exakt richtig) ---
+        document.getElementById('startBtn').addEventListener('click', function() {
+            // Audio System starten (User Interaktion = Erlaubt)
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!audioCtx) {
+                    audioCtx = new AudioContext(); 
+                    osc = audioCtx.createOscillator(); 
+                    gainNode = audioCtx.createGain();
+                    osc.connect(gainNode); 
+                    gainNode.connect(audioCtx.destination);
+                    osc.type = 'sine'; 
+                    gainNode.gain.value = 0; 
+                    osc.start(); 
+                    isAudioReady = true;
+                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (err) { console.log("Audio inaktiv"); }
+
+            // Sensoren abfragen und Level 1 starten
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(state => {
                     if (state === 'granted') {
-                        initAudio(); // Audio-Engine erst nach Zusage hochfahren
                         window.addEventListener('deviceorientation', handleSensors);
                         startK1();
                     } else {
-                        alert("Sensor-Berechtigung verweigert!");
+                        alert("Sensoren wurden verweigert!");
                     }
-                }).catch(err => { alert("Fehler beim Sensorstart: " + err); });
+                }).catch(err => { alert("Sensor-Fehler: " + err); });
             } else {
-                // Für alle Nicht-Apple Geräte (Android, PCs)
-                initAudio();
                 window.addEventListener('deviceorientation', handleSensors);
                 startK1();
             }
-        }
+        });
 
-        // --- AUDIO ENGINE ---
-        function initAudio() {
-            if(isAudioReady) return;
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if(!AudioContext) return;
-                audioCtx = new AudioContext(); 
-                osc = audioCtx.createOscillator(); 
-                gainNode = audioCtx.createGain();
-                osc.connect(gainNode); 
-                gainNode.connect(audioCtx.destination);
-                osc.type = 'sine'; 
-                gainNode.gain.value = 0; 
-                osc.start(); 
-                isAudioReady = true;
-                if(audioCtx.state === 'suspended') audioCtx.resume();
-            } catch (e) { console.log("Audio Error"); }
-        }
-        
+        // --- 3. HILFSFUNKTIONEN ---
         function playSound(freq, type='sine', vol=0.1) {
-            if(!isAudioReady) return;
+            if(!isAudioReady || !audioCtx) return;
             osc.type = type; 
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.02);
         }
         
         function stopSound() { 
-            if(isAudioReady) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.02); 
+            if(!isAudioReady || !audioCtx) return;
+            gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.02); 
         }
         
         function haptic(ms) { 
             if (navigator.vibrate) navigator.vibrate(ms); 
         }
 
-        // --- SMOOTHING MATHEMATIK (NaN-Schutz) ---
         function smooth() {
             if(isNaN(tX)) tX=0; if(isNaN(tY)) tY=0; if(isNaN(tComp)) tComp=0;
-            
-            if(isNaN(sX)) sX = tX;
-            if(isNaN(sY)) sY = tY;
-            if(isNaN(sComp)) sComp = tComp;
+            if(isNaN(sX)) sX = tX; if(isNaN(sY)) sY = tY; if(isNaN(sComp)) sComp = tComp;
 
             sX += (tX - sX) * 0.15;
             sY += (tY - sY) * 0.15;
@@ -295,28 +294,49 @@
 
         function changeScreen(from, to) {
             cancelAnimationFrame(activeReq); 
-            clearInterval(activeInt); 
+            clearInterval(activeInt);
             stopSound();
             document.getElementById(from).classList.remove('active'); 
             document.getElementById(to).classList.add('active');
         }
 
         // ==========================================
-        // K1: UPLINK
+        // K1: UPLINK (Hier war der fatale ID-Fehler!)
         // ==========================================
         let k1_stage=1, k1_sync=0, tgC=0, tgP=0, tgR=0;
         
-        function startK1() { changeScreen('start-screen', 'level-1'); k1SetTarget(); activeInt = setInterval(k1Loop, 30); }
+        function startK1() { 
+            changeScreen('start-screen', 'level-1'); 
+            k1SetTarget(); 
+            activeInt = setInterval(k1Loop, 30); 
+        }
         
         function k1SetTarget() {
-            tgC = Math.floor(Math.random()*360); tgP = Math.floor(Math.random()*40)+20; tgR = Math.floor(Math.random()*40)-20;
+            tgC = Math.floor(Math.random()*360); 
+            tgP = Math.floor(Math.random()*40)+20; 
+            tgR = Math.floor(Math.random()*40)-20;
+            
             document.getElementById('k1-tgt-c').style.transform = `rotate(${tgC}deg)`;
             document.getElementById('k1-tgt-p').style.bottom = `${(tgP/90)*110}px`;
             document.getElementById('k1-tgt-r').style.left = `${50 + (tgR/90)*100}%`;
             
-            if(k1_stage === 1) { document.getElementById('k1-pitch').style.display = 'none'; document.getElementById('k1-roll').style.display = 'none'; }
-            if(k1_stage === 2) { document.getElementById('k1-pitch').style.display = 'block'; document.getElementById('k1-instr').innerText = "Stufe 2: Zusätzlich Neigung nach vorn/hinten."; }
-            if(k1_stage === 3) { document.getElementById('k1-roll').style.display = 'block'; document.getElementById('k1-instr').innerText = "Stufe 3: Zusätzlich Wasserwaage (links/rechts kippen)."; }
+            // CRITICAL FIX: Die richtigen IDs heißen mod-p und mod-r!
+            let modP = document.getElementById('mod-p');
+            let modR = document.getElementById('mod-r');
+            let instr = document.getElementById('k1-instr');
+
+            if(k1_stage === 1) { 
+                if(modP) modP.style.display = 'none'; 
+                if(modR) modR.style.display = 'none'; 
+            }
+            if(k1_stage === 2) { 
+                if(modP) modP.style.display = 'block'; 
+                if(instr) instr.innerText = "Stufe 2: Zusätzlich Neigung nach vorn/hinten."; 
+            }
+            if(k1_stage === 3) { 
+                if(modR) modR.style.display = 'block'; 
+                if(instr) instr.innerText = "Stufe 3: Zusätzlich Wasserwaage (links/rechts kippen)."; 
+            }
         }
         
         function k1Loop() {
@@ -336,14 +356,26 @@
             if(k1_stage >= 2) isOk = isOk && okP;
             if(k1_stage >= 3) isOk = isOk && okR;
 
-            if (isOk) { k1_sync += 1.5; document.getElementById('l1-sync').style.color = 'var(--success)'; playSound(800, 'sine', 0.05); } 
-            else { k1_sync = Math.max(0, k1_sync - 2); document.getElementById('l1-sync').style.color = 'var(--danger)'; stopSound(); }
+            if (isOk) { 
+                k1_sync += 1.5; 
+                document.getElementById('l1-sync').style.color = 'var(--success)'; 
+                playSound(800, 'sine', 0.05); 
+            } else { 
+                k1_sync = Math.max(0, k1_sync - 2); 
+                document.getElementById('l1-sync').style.color = 'var(--danger)'; 
+                stopSound(); 
+            }
 
             document.getElementById('l1-sync').innerText = `${Math.floor(k1_sync)}%`;
             if (k1_sync >= 100) {
-                k1_sync = 0; k1_stage++; playSound(1200, 'square', 0.1); setTimeout(stopSound, 200); haptic(200);
-                if (k1_stage <= 3) { document.getElementById('l1-txt').innerText = `ACHSE: ${k1_stage}/3`; k1SetTarget(); } 
-                else startK2();
+                k1_sync = 0; k1_stage++; 
+                playSound(1200, 'square', 0.1); setTimeout(stopSound, 200); haptic(200);
+                if (k1_stage <= 3) { 
+                    document.getElementById('l1-txt').innerText = `ACHSE: ${k1_stage}/3`; 
+                    k1SetTarget(); 
+                } else {
+                    startK2();
+                }
             }
         }
 
@@ -351,7 +383,6 @@
         // K2: LABYRINTH
         // ==========================================
         let k2_stage=0, ball={x:20, y:150, vx:0, vy:0, r:6}, isFalling=false;
-        
         const mazes = [
             { start:{x:20,y:150}, goal:{x:220,y:140,w:40,h:40}, walls:[{x:0,y:0,w:280,h:120}, {x:0,y:200,w:280,h:120}], holes:[{x:90,y:125,r:22}, {x:170,y:195,r:22}] }, 
             { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:0,y:100,w:200,h:20}, {x:80,y:200,w:200,h:20}], holes:[{x:240,y:40,r:25}, {x:40,y:150,r:25}, {x:240,y:250,r:25}] },
