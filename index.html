@@ -199,11 +199,10 @@
         
         let tX=0, tY=0, tComp=0, sX=0, sY=0, sComp=0;
         let activeReq = null, activeInt = null;
-        let audioCtx, osc, gainNode, isAudioReady = false;
+        let audioCtx = null, osc = null, gainNode = null, isAudioReady = false;
 
-        // --- BOMBENSICHERE SENSOR LOGIK ---
+        // --- BOMBENSICHERE SENSOR LOGIK (Exakt wie dein erfolgreicher Test!) ---
         function handleSensors(e) {
-            // Nur überschreiben, wenn echte Werte kommen
             if (e.gamma !== null && e.gamma !== undefined) tX = e.gamma; 
             if (e.beta !== null && e.beta !== undefined) tY = e.beta;
             
@@ -220,42 +219,46 @@
             if(debug) debug.innerText = `Sensoren aktiv: C:${Math.floor(tComp)}° P:${Math.floor(tY)}° R:${Math.floor(tX)}°`;
         }
 
-        // --- DER FIX: INITIALISIERUNG IN DER RICHTIGEN REIHENFOLGE ---
+        // --- DER FIX: ABSOLUT FEHLERFREIER START-UP PROZESS ---
         function initSystem() {
-            // 1. Audio bereit machen (User Gesture)
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if(AudioContext && !audioCtx) {
-                    audioCtx = new AudioContext(); 
-                    osc = audioCtx.createOscillator(); 
-                    gainNode = audioCtx.createGain();
-                    osc.connect(gainNode); 
-                    gainNode.connect(audioCtx.destination);
-                    osc.type = 'sine'; 
-                    gainNode.gain.value = 0; 
-                    osc.start(); 
-                    isAudioReady = true;
-                }
-                if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-            } catch (e) { console.log("Audio Error"); }
-
-            // 2. Sensor SOFORT anfragen
+            // 1. Zuerst die Sensor-Berechtigung abfragen (Sofortiger iOS-Sicherheits-Trigger)
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(state => {
                     if (state === 'granted') {
+                        initAudio(); // Audio-Engine erst nach Zusage hochfahren
                         window.addEventListener('deviceorientation', handleSensors);
                         startK1();
                     } else {
                         alert("Sensor-Berechtigung verweigert!");
                     }
-                }).catch(err => { alert("Fehler: " + err); });
+                }).catch(err => { alert("Fehler beim Sensorstart: " + err); });
             } else {
+                // Für alle Nicht-Apple Geräte (Android, PCs)
+                initAudio();
                 window.addEventListener('deviceorientation', handleSensors);
                 startK1();
             }
         }
 
-        // --- AUDIO HELPERS ---
+        // --- AUDIO ENGINE ---
+        function initAudio() {
+            if(isAudioReady) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if(!AudioContext) return;
+                audioCtx = new AudioContext(); 
+                osc = audioCtx.createOscillator(); 
+                gainNode = audioCtx.createGain();
+                osc.connect(gainNode); 
+                gainNode.connect(audioCtx.destination);
+                osc.type = 'sine'; 
+                gainNode.gain.value = 0; 
+                osc.start(); 
+                isAudioReady = true;
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (e) { console.log("Audio Error"); }
+        }
+        
         function playSound(freq, type='sine', vol=0.1) {
             if(!isAudioReady) return;
             osc.type = type; 
@@ -271,11 +274,10 @@
             if (navigator.vibrate) navigator.vibrate(ms); 
         }
 
-        // --- SMOOTHING (Sichert gegen NaN ab) ---
+        // --- SMOOTHING MATHEMATIK (NaN-Schutz) ---
         function smooth() {
             if(isNaN(tX)) tX=0; if(isNaN(tY)) tY=0; if(isNaN(tComp)) tComp=0;
             
-            // Verhindert das Einfrieren in den ersten Millisekunden
             if(isNaN(sX)) sX = tX;
             if(isNaN(sY)) sY = tY;
             if(isNaN(sComp)) sComp = tComp;
@@ -292,8 +294,11 @@
         }
 
         function changeScreen(from, to) {
-            cancelAnimationFrame(activeReq); clearInterval(activeInt); stopSound();
-            document.getElementById(from).classList.remove('active'); document.getElementById(to).classList.add('active');
+            cancelAnimationFrame(activeReq); 
+            clearInterval(activeInt); 
+            stopSound();
+            document.getElementById(from).classList.remove('active'); 
+            document.getElementById(to).classList.add('active');
         }
 
         // ==========================================
