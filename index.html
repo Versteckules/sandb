@@ -69,7 +69,7 @@
         .laser-beam-out { position: absolute; left: 135px; top: 98px; width: 200px; height: 4px; background: var(--danger); transform-origin: left center; }
         .laser-target { position: absolute; right: 0; top: 90px; width: 15px; height: 15px; background: var(--success); border: 3px solid #000; border-right: none;}
 
-        /* K5: LOCKPICK (Fehlerfrei!) */
+        /* K5: LOCKPICK */
         .lock-container { width: 240px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; }
         .cylinder { width: 180px; height: 180px; border-radius: 50%; border: 6px dashed #000; background: #eee; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: 4px 4px 0px #000; }
         .shear-line { position: absolute; top: 40%; left: 10%; width: 80%; height: 6px; background: rgba(0,0,0,0.1); border-top: 3px dashed #000; z-index: 5; }
@@ -99,12 +99,10 @@
             Der Tresor nutzt 6 mechanische Sicherheitsschichten. Dein Gerät dient als Einbruchswerkzeug. Steuere ALLES durch exaktes Neigen und Drehen im Raum (Kompass & Gyroskop).
         </div>
         
-        <!-- START BUTTON -->
         <button class="btn" id="startBtn">SYSTEM STARTEN</button>
-        <div id="sensor-debug">Warte auf System-Start...</div>
+        <div id="sensor-debug">Warte auf Sensor-Start...</div>
     </div>
 
-    <!-- LEVEL 1 -->
     <div id="level-1" class="screen">
         <h2>1. Satelliten-Uplink</h2>
         <div class="story-box">
@@ -119,7 +117,6 @@
         <div class="sensor-module k1-roll" id="mod-r"><div class="k1-roll-tgt" id="k1-tgt-r"></div><div class="k1-roll-ind" id="k1-ind-r"></div></div>
     </div>
 
-    <!-- LEVEL 2 -->
     <div id="level-2" class="screen">
         <h2>2. Zylinder-Labyrinth</h2>
         <div class="story-box">
@@ -130,12 +127,11 @@
         <div id="maze-board"><div id="ball"></div></div>
     </div>
 
-    <!-- LEVEL 3 -->
     <div id="level-3" class="screen">
         <h2>3. Akustik-Siegel</h2>
         <div class="story-box">
             <span>Glas-Resonanz</span>
-            Die Zielfrequenz schwankt! Kippe das Handy vor/zurück, um deine Welle exakt darüber zu legen. 3 Sekunden halten.
+            Die Zielfrequenz schwankt! Kippe das Handy vor/zurück, um deine Welle (blau) exakt darüber zu legen. Halte den Ton 2 Sekunden stabil.
         </div>
         <div class="lcd"><span id="l3-txt">SYNC STATUS</span><span id="l3-val" style="color:var(--danger)">ERR</span></div>
         <div class="sonar-container">
@@ -144,12 +140,11 @@
         </div>
     </div>
 
-    <!-- LEVEL 4 -->
     <div id="level-4" class="screen">
         <h2>4. Lichtschranke</h2>
         <div class="story-box">
             <span>Optischer Sensor</span>
-            Der Empfänger bewegt sich! Kippe das Handy nach links/rechts, um den Spiegel zu drehen.
+            Der Empfänger (grün) bewegt sich! Kippe das Handy nach links/rechts (Wasserwaage), um den Spiegel zu drehen und den Laserstrahl ins Ziel zu zwingen.
         </div>
         <div class="lcd"><span id="l4-txt">UPLOAD</span><span id="l4-val" style="color:var(--danger)">0%</span></div>
         <div class="laser-box">
@@ -161,12 +156,11 @@
         </div>
     </div>
 
-    <!-- LEVEL 5 -->
     <div id="level-5" class="screen">
         <h2>5. Not-Verriegelung</h2>
         <div class="story-box">
             <span>Feinmechanik</span>
-            Kippe nach VORN, um den Pin auf die grüne Linie zu heben. WENN er sitzt, kippe nach RECHTS zum Drehen.
+            Kippe nach VORN, um den Pin genau auf die grüne Linie zu heben. WENN er sitzt, kippe nach RECHTS, um den Zylinder zu drehen. Verrutschen = Absturz!
         </div>
         <div class="lcd"><span id="l5-txt">BOLZEN: 1/3</span><span id="l5-status" style="color:var(--blue)">LOCKED</span></div>
         <div class="lock-container">
@@ -177,12 +171,11 @@
         </div>
     </div>
 
-    <!-- LEVEL 6 -->
     <div id="level-6" class="screen">
         <h2>6. Kern-Strahlung</h2>
         <div class="story-box">
             <span>Radioaktive Signatur</span>
-            Finde die 3 Bolzen im Raum (360°). Drehe dich, bis das Signal maximal ist. Dann Button drücken!
+            Finde die 3 Bolzen im Raum (360°). Drehe dich! Wenn das Piepen alarmierend schnell wird, hast du das Ziel. Button drücken!
         </div>
         <div class="lcd"><span id="l6-status" style="color:var(--text-main)">SUCHEN...</span></div>
         <div class="k6-radar" id="k6-radar"><div class="k6-sweep"></div><div class="k6-core" id="k6-core"></div></div>
@@ -190,12 +183,11 @@
         <button class="btn" onclick="k6Extract()">ENTRIEGELN</button>
     </div>
 
-    <!-- FINAL SCREEN -->
     <div id="final-screen" class="screen">
         <h1 style="background:var(--success); color:#fff; font-size:30px;">TRESOR OFFEN</h1>
         <div class="story-box" style="border-color: var(--success); border-left-color: var(--success); margin-top:20px;">
             <span>Mission Erfolgreich</span>
-            Alle Systeme überbrückt. Hier sind die Zielkoordinaten für deinen Fund:
+            Alle Sicherheitssysteme wurden überbrückt. Das Gehäuse ist offen. Hier sind die Zielkoordinaten für deinen Fund:
         </div>
         <div class="lcd" style="justify-content: center; font-size: 20px; padding: 20px; color: #000; border-color:var(--success);" id="coords-display"></div>
     </div>
@@ -207,7 +199,6 @@
         let activeReq = null, activeInt = null;
         let audioCtx = null, osc = null, gainNode = null, isAudioReady = false;
 
-        // --- 1. GLOBALE SENSOR ABFRAGE (Sicher und robust) ---
         function handleSensors(e) {
             if (e.gamma !== null && e.gamma !== undefined) tX = e.gamma; 
             if (e.beta !== null && e.beta !== undefined) tY = e.beta;
@@ -225,9 +216,7 @@
             if(debug) debug.innerText = `Signale OK: C:${Math.floor(tComp)}° P:${Math.floor(tY)}° R:${Math.floor(tX)}°`;
         }
 
-        // --- 2. START-BUTTON (Behandelt Audio und Berechtigungen exakt richtig) ---
         document.getElementById('startBtn').addEventListener('click', function() {
-            // Audio System starten (User Interaktion = Erlaubt)
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!audioCtx) {
@@ -244,7 +233,6 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
             } catch (err) { console.log("Audio inaktiv"); }
 
-            // Sensoren abfragen und Level 1 starten
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission().then(state => {
                     if (state === 'granted') {
@@ -260,7 +248,6 @@
             }
         });
 
-        // --- 3. HILFSFUNKTIONEN ---
         function playSound(freq, type='sine', vol=0.1) {
             if(!isAudioReady || !audioCtx) return;
             osc.type = type; 
@@ -301,7 +288,7 @@
         }
 
         // ==========================================
-        // K1: UPLINK (Hier war der fatale ID-Fehler!)
+        // K1: UPLINK
         // ==========================================
         let k1_stage=1, k1_sync=0, tgC=0, tgP=0, tgR=0;
         
@@ -320,7 +307,6 @@
             document.getElementById('k1-tgt-p').style.bottom = `${(tgP/90)*110}px`;
             document.getElementById('k1-tgt-r').style.left = `${50 + (tgR/90)*100}%`;
             
-            // CRITICAL FIX: Die richtigen IDs heißen mod-p und mod-r!
             let modP = document.getElementById('mod-p');
             let modR = document.getElementById('mod-r');
             let instr = document.getElementById('k1-instr');
@@ -380,13 +366,15 @@
         }
 
         // ==========================================
-        // K2: LABYRINTH
+        // K2: LABYRINTH (Optimiert: Keine Überlappungen, schwerer zu steuern)
         // ==========================================
         let k2_stage=0, ball={x:20, y:150, vx:0, vy:0, r:6}, isFalling=false;
+        
+        // Alle Löcher haben jetzt garantierten Sicherheitsabstand zum Ziel (x:220, y:130/240)
         const mazes = [
-            { start:{x:20,y:150}, goal:{x:220,y:140,w:40,h:40}, walls:[{x:0,y:0,w:280,h:120}, {x:0,y:200,w:280,h:120}], holes:[{x:90,y:125,r:22}, {x:170,y:195,r:22}] }, 
-            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:0,y:100,w:200,h:20}, {x:80,y:200,w:200,h:20}], holes:[{x:240,y:40,r:25}, {x:40,y:150,r:25}, {x:240,y:250,r:25}] },
-            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:70,y:0,w:15,h:250}, {x:140,y:70,w:15,h:250}, {x:210,y:0,w:15,h:220}], holes:[{x:35,y:150,r:18}, {x:105,y:200,r:18}, {x:175,y:100,r:18}] }
+            { start:{x:20,y:140}, goal:{x:220,y:130,w:40,h:40}, walls:[{x:0,y:0,w:280,h:100}, {x:0,y:200,w:280,h:100}, {x:120,y:100,w:20,h:60}], holes:[{x:80,y:150,r:16}, {x:180,y:150,r:16}] }, 
+            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:0,y:80,w:200,h:20}, {x:80,y:180,w:200,h:20}], holes:[{x:240,y:40,r:20}, {x:40,y:140,r:20}, {x:150,y:240,r:20}] },
+            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:70,y:0,w:15,h:220}, {x:140,y:80,w:15,h:220}, {x:210,y:0,w:15,h:200}], holes:[{x:35,y:150,r:15}, {x:105,y:240,r:15}, {x:175,y:100,r:15}, {x:240,y:100,r:15}] }
         ];
 
         function startK2() { changeScreen('level-1', 'level-2'); k2Load(); activeReq = requestAnimationFrame(k2Loop); }
@@ -404,11 +392,15 @@
         }
         function k2Loop() {
             if(isFalling) return; smooth();
-            ball.vx += sX * 0.05; ball.vy += sY * 0.05; ball.vx *= 0.90; ball.vy *= 0.90; 
+            // Schwung erhöht (0.06) und Reibung gesenkt (0.95 statt 0.90) = Sehr viel rutschiger!
+            ball.vx += sX * 0.06; ball.vy += sY * 0.06; ball.vx *= 0.95; ball.vy *= 0.95; 
+            
             if(!k2Wall(ball.x+ball.vx, ball.y)) ball.x += ball.vx; else { ball.vx = -ball.vx*0.3; } 
             if(!k2Wall(ball.x, ball.y+ball.vy)) ball.y += ball.vy; else { ball.vy = -ball.vy*0.3; }
+            
             const bD = document.getElementById('ball'); bD.style.left=ball.x+'px'; bD.style.top=ball.y+'px';
             let cx = ball.x+ball.r, cy = ball.y+ball.r; const m = mazes[k2_stage];
+            
             for(let h of m.holes) {
                 if(Math.hypot(cx-h.x, cy-h.y) < h.r - 2) {
                     isFalling=true; playSound(100, 'sawtooth', 0.2); haptic([200,50,200]);
@@ -426,24 +418,34 @@
         }
 
         // ==========================================
-        // K3: SONAR
+        // K3: SONAR (Optimiert: Langsamer und großzügiger)
         // ==========================================
         let k3_hold = 0;
         function startK3() { changeScreen('level-2', 'level-3'); activeInt = setInterval(k3Loop, 30); }
         function k3Loop() {
             smooth();
-            let tgFreq = 400 + Math.sin(Date.now() / 1500) * 200; 
+            // Bewegung langsamer gemacht (Teiler 2500 statt 1500, Ausschlag 150 statt 200)
+            let tgFreq = 400 + Math.sin(Date.now() / 2500) * 150; 
             let pitch = Math.max(-90, Math.min(90, sY));
             let usrFreq = 400 + (pitch * 5); 
+            
             playSound(usrFreq, 'sine', 0.1); 
             document.getElementById('wave-tgt').style.top = `${(tgFreq/800)*100}%`;
             document.getElementById('wave-usr').style.top = `${(usrFreq/800)*100}%`;
+            
             let diff = Math.abs(usrFreq - tgFreq);
-            if(diff < 10) { 
-                k3_hold += 30; document.getElementById('l3-val').innerText = "SYNCED"; document.getElementById('l3-val').style.color = "var(--success)";
-                if(k3_hold >= 3000) { k3_hold = 0; stopSound(); startK4(); } 
+            
+            // Toleranz massiv vergrößert (25 statt 10)
+            if(diff < 25) { 
+                k3_hold += 30; 
+                document.getElementById('l3-val').innerText = "SYNCED"; 
+                document.getElementById('l3-val').style.color = "var(--success)";
+                // Zeit verkürzt: 2 Sekunden statt 3
+                if(k3_hold >= 2000) { k3_hold = 0; stopSound(); startK4(); } 
             } else {
-                k3_hold = 0; document.getElementById('l3-val').innerText = `${Math.floor(diff)} Hz DIFF`; document.getElementById('l3-val').style.color = "var(--danger)";
+                k3_hold = 0; 
+                document.getElementById('l3-val').innerText = `${Math.floor(diff)} Hz DIFF`; 
+                document.getElementById('l3-val').style.color = "var(--danger)";
             }
         }
 
@@ -463,9 +465,9 @@
             document.getElementById('laser-target').style.top = `${tgY}px`;
             let hitY = Math.tan(outAngle * Math.PI / 180) * 135 + 98; 
             if(hitY > tgY && hitY < tgY + 15) { 
-                k4_hold += 30; document.getElementById('l4-val').innerText = `${Math.floor((k4_hold/1500)*100)}%`; document.getElementById('l4-val').style.color = "var(--success)";
+                k4_hold += 30; document.getElementById('l4-val').innerText = `${Math.floor((k4_hold/1200)*100)}%`; document.getElementById('l4-val').style.color = "var(--success)";
                 playSound(600 + k4_hold, 'triangle', 0.05);
-                if(k4_hold >= 1500) { 
+                if(k4_hold >= 1200) { 
                     k4_hold = 0; k4_stage++; stopSound(); haptic(200);
                     if(k4_stage < 3) document.getElementById('l4-txt').innerText = `UPLOAD: ${k4_stage+1}/3`; else startK5();
                 }
@@ -509,7 +511,9 @@
             smooth();
             let tg = k6_tgts[k6_stage]; k6_dist = Math.abs(sComp - tg); if(k6_dist > 180) k6_dist = 360 - k6_dist;
             let core = document.getElementById('k6-core'); let status = document.getElementById('l6-status');
-            if(k6_dist < 5) { 
+            
+            // Toleranz für den Treffer auf 8 Grad vergrößert
+            if(k6_dist < 8) { 
                 core.style.background = "var(--danger)"; core.style.transform = "scale(1.5)"; status.innerText = "ZIEL GEFUNDEN!"; status.style.color = "var(--danger)"; 
                 playSound(1000, 'square', 0.1); 
             } else if(k6_dist < 40) { 
@@ -521,7 +525,7 @@
             }
         }
         function k6Extract() {
-            if(k6_dist < 5) {
+            if(k6_dist < 8) {
                 document.getElementById(`k6-d${k6_stage+1}`).classList.add('found');
                 k6_stage++; playSound(1200, 'sine', 0.2); setTimeout(stopSound, 300); haptic([100,50,100]);
                 if(k6_stage >= 3) showFinal();
