@@ -67,7 +67,8 @@
         .laser-beam-in { position: absolute; left: 15px; top: 98px; width: 125px; height: 4px; background: var(--danger); transform-origin: left center; }
         .laser-mirror { position: absolute; left: 130px; top: 80px; width: 10px; height: 40px; background: #ccc; border: 2px solid #000; transform-origin: center; }
         .laser-beam-out { position: absolute; left: 135px; top: 98px; width: 200px; height: 4px; background: var(--danger); transform-origin: left center; }
-        .laser-target { position: absolute; right: 0; top: 90px; width: 15px; height: 15px; background: var(--success); border: 3px solid #000; border-right: none;}
+        /* Ziel ist jetzt doppelt so hoch (30px) */
+        .laser-target { position: absolute; right: 0; top: 85px; width: 15px; height: 30px; background: var(--success); border: 3px solid #000; border-right: none;}
 
         /* K5: LOCKPICK */
         .lock-container { width: 240px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; }
@@ -96,7 +97,7 @@
         
         <div class="story-box">
             <span>Mission Aegis-Kern</span>
-            Der Tresor nutzt 6 mechanische Sicherheitsschichten. Dein Gerät dient als Einbruchswerkzeug. Steuere ALLES durch exaktes Neigen und Drehen im Raum (Kompass & Gyroskop).
+            Der Tresor nutzt 6 mechanische Sicherheitsschichten. Dein Gerät dient als Einbruchswerkzeug. Steuere ALLES durch exaktes Neigen und Drehen im Raum.
         </div>
         
         <button class="btn" id="startBtn">SYSTEM STARTEN</button>
@@ -121,7 +122,7 @@
         <h2>2. Zylinder-Labyrinth</h2>
         <div class="story-box">
             <span>Mechanische Sperre</span>
-            Balanciere den Hacker-Bot (blau) zum grünen Port. Das Eis ist extrem rutschig. Ein Absturz löst Alarm aus!
+            Balanciere den Hacker-Bot (blau) zum grünen Port. Kontrolliere die Kugel durch Gänge, vermeide die Fallen!
         </div>
         <div class="lcd"><span id="l2-txt">EBENE: 1/3</span><span id="l2-status" style="color:var(--success)">BEREIT</span></div>
         <div id="maze-board"><div id="ball"></div></div>
@@ -366,15 +367,24 @@
         }
 
         // ==========================================
-        // K2: LABYRINTH (Optimiert: Keine Überlappungen, schwerer zu steuern)
+        // K2: LABYRINTH (Bessere Wände, langsamere Kugel)
         // ==========================================
-        let k2_stage=0, ball={x:20, y:150, vx:0, vy:0, r:6}, isFalling=false;
+        let k2_stage=0, ball={x:20, y:260, vx:0, vy:0, r:6}, isFalling=false;
         
-        // Alle Löcher haben jetzt garantierten Sicherheitsabstand zum Ziel (x:220, y:130/240)
+        // Echte Labyrinthe mit Gängen
         const mazes = [
-            { start:{x:20,y:140}, goal:{x:220,y:130,w:40,h:40}, walls:[{x:0,y:0,w:280,h:100}, {x:0,y:200,w:280,h:100}, {x:120,y:100,w:20,h:60}], holes:[{x:80,y:150,r:16}, {x:180,y:150,r:16}] }, 
-            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:0,y:80,w:200,h:20}, {x:80,y:180,w:200,h:20}], holes:[{x:240,y:40,r:20}, {x:40,y:140,r:20}, {x:150,y:240,r:20}] },
-            { start:{x:20,y:20}, goal:{x:220,y:240,w:40,h:40}, walls:[{x:70,y:0,w:15,h:220}, {x:140,y:80,w:15,h:220}, {x:210,y:0,w:15,h:200}], holes:[{x:35,y:150,r:15}, {x:105,y:240,r:15}, {x:175,y:100,r:15}, {x:240,y:100,r:15}] }
+            // Ebene 1: Zick-Zack-Gang
+            { start:{x:20,y:260}, goal:{x:220,y:20,w:40,h:40}, 
+              walls:[{x:0,y:200,w:220,h:20}, {x:60,y:100,w:220,h:20}], 
+              holes:[{x:140,y:150,r:16}, {x:40,y:50,r:16}] }, 
+            // Ebene 2: Schlangenlinien
+            { start:{x:20,y:20}, goal:{x:20,y:240,w:40,h:40}, 
+              walls:[{x:100,y:0,w:20,h:200}, {x:180,y:100,w:20,h:200}], 
+              holes:[{x:150,y:250,r:16}, {x:240,y:50,r:16}] },
+            // Ebene 3: Der enge Tunnel
+            { start:{x:130,y:260}, goal:{x:120,y:20,w:40,h:40}, 
+              walls:[{x:80,y:80,w:20,h:220}, {x:180,y:80,w:20,h:220}, {x:0,y:80,w:80,h:20}, {x:200,y:80,w:80,h:20}], 
+              holes:[{x:140,y:180,r:14}, {x:140,y:120,r:14}, {x:40,y:150,r:20}, {x:240,y:150,r:20}] }
         ];
 
         function startK2() { changeScreen('level-1', 'level-2'); k2Load(); activeReq = requestAnimationFrame(k2Loop); }
@@ -392,8 +402,8 @@
         }
         function k2Loop() {
             if(isFalling) return; smooth();
-            // Schwung erhöht (0.06) und Reibung gesenkt (0.95 statt 0.90) = Sehr viel rutschiger!
-            ball.vx += sX * 0.06; ball.vy += sY * 0.06; ball.vx *= 0.95; ball.vy *= 0.95; 
+            // Physik optimiert: Weniger Beschleunigung (0.03), Mehr Reibung (0.85) = Leichter zu stoppen
+            ball.vx += sX * 0.03; ball.vy += sY * 0.03; ball.vx *= 0.85; ball.vy *= 0.85; 
             
             if(!k2Wall(ball.x+ball.vx, ball.y)) ball.x += ball.vx; else { ball.vx = -ball.vx*0.3; } 
             if(!k2Wall(ball.x, ball.y+ball.vy)) ball.y += ball.vy; else { ball.vy = -ball.vy*0.3; }
@@ -418,13 +428,12 @@
         }
 
         // ==========================================
-        // K3: SONAR (Optimiert: Langsamer und großzügiger)
+        // K3: SONAR
         // ==========================================
         let k3_hold = 0;
         function startK3() { changeScreen('level-2', 'level-3'); activeInt = setInterval(k3Loop, 30); }
         function k3Loop() {
             smooth();
-            // Bewegung langsamer gemacht (Teiler 2500 statt 1500, Ausschlag 150 statt 200)
             let tgFreq = 400 + Math.sin(Date.now() / 2500) * 150; 
             let pitch = Math.max(-90, Math.min(90, sY));
             let usrFreq = 400 + (pitch * 5); 
@@ -435,12 +444,10 @@
             
             let diff = Math.abs(usrFreq - tgFreq);
             
-            // Toleranz massiv vergrößert (25 statt 10)
             if(diff < 25) { 
                 k3_hold += 30; 
                 document.getElementById('l3-val').innerText = "SYNCED"; 
                 document.getElementById('l3-val').style.color = "var(--success)";
-                // Zeit verkürzt: 2 Sekunden statt 3
                 if(k3_hold >= 2000) { k3_hold = 0; stopSound(); startK4(); } 
             } else {
                 k3_hold = 0; 
@@ -450,24 +457,35 @@
         }
 
         // ==========================================
-        // K4: LASER
+        // K4: LASER (Einfacher: Größeres Ziel, sanfterer Spiegel)
         // ==========================================
         let k4_stage = 0, k4_hold = 0;
         function startK4() { changeScreen('level-3', 'level-4'); document.getElementById('l4-txt').innerText = `UPLOAD: 1/3`; activeInt = setInterval(k4Loop, 30); }
         function k4Loop() {
             smooth();
-            let angle = Math.max(-40, Math.min(40, sX * 1.5));
+            // Spiegel ist weniger zappelig (Faktor 1.2 statt 1.5)
+            let angle = Math.max(-40, Math.min(40, sX * 1.2));
             document.getElementById('laser-mirror').style.transform = `rotate(${angle}deg)`;
             let outAngle = angle * 2;
             document.getElementById('laser-beam-out').style.transform = `rotate(${outAngle}deg)`;
-            let speed = (k4_stage + 1) * 600;
-            let tgY = 90 + Math.sin(Date.now() / speed) * 80;
+            
+            // Bewegung deutlich verlangsamt
+            let speed = (k4_stage + 1) * 800 + 500;
+            let tgY = 80 + Math.sin(Date.now() / speed) * 70;
             document.getElementById('laser-target').style.top = `${tgY}px`;
+            
             let hitY = Math.tan(outAngle * Math.PI / 180) * 135 + 98; 
-            if(hitY > tgY && hitY < tgY + 15) { 
-                k4_hold += 30; document.getElementById('l4-val').innerText = `${Math.floor((k4_hold/1200)*100)}%`; document.getElementById('l4-val').style.color = "var(--success)";
+            
+            // Trefferzone ist jetzt 30px groß (doppelt so hoch wie vorher)
+            if(hitY > tgY && hitY < tgY + 30) { 
+                // Upload geht schneller
+                k4_hold += 40; 
+                document.getElementById('l4-val').innerText = `${Math.floor((k4_hold/1000)*100)}%`; 
+                document.getElementById('l4-val').style.color = "var(--success)";
                 playSound(600 + k4_hold, 'triangle', 0.05);
-                if(k4_hold >= 1200) { 
+                
+                // Haltezeit auf 1 Sekunde reduziert
+                if(k4_hold >= 1000) { 
                     k4_hold = 0; k4_stage++; stopSound(); haptic(200);
                     if(k4_stage < 3) document.getElementById('l4-txt').innerText = `UPLOAD: ${k4_stage+1}/3`; else startK5();
                 }
@@ -512,7 +530,6 @@
             let tg = k6_tgts[k6_stage]; k6_dist = Math.abs(sComp - tg); if(k6_dist > 180) k6_dist = 360 - k6_dist;
             let core = document.getElementById('k6-core'); let status = document.getElementById('l6-status');
             
-            // Toleranz für den Treffer auf 8 Grad vergrößert
             if(k6_dist < 8) { 
                 core.style.background = "var(--danger)"; core.style.transform = "scale(1.5)"; status.innerText = "ZIEL GEFUNDEN!"; status.style.color = "var(--danger)"; 
                 playSound(1000, 'square', 0.1); 
