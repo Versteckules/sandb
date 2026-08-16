@@ -1,152 +1,202 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interaktive Jukebox</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e; 
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Projekt Jukebox – Interaktives Geocaching-Rätsel. Erkenne 25 Songs, gib die Titel ein und entschlüssle die finalen Koordinaten." />
 
-        .jukebox-container {
-            position: relative; 
-            width: 100%;
-            max-width: 800px; 
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  <title>Projekt Jukebox</title>
 
-        .jukebox-image {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            position: relative;
-            z-index: 1; 
-        }
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
 
-        /* 
-         * HIER IST DER WICHTIGE BEREICH FÜR DIE AUSRICHTUNG!
-         * Wenn die roten Boxen nicht perfekt auf den Tasten liegen, 
-         * ändere diese Prozent-Zahlen in kleinen Schritten (z.B. von 27.5% auf 28%).
-         */
-        .button-overlay {
-            position: absolute;
-            
-            top: 24.5%;      /* Schiebt das Raster nach oben/unten */
-            left: 27.5%;     /* Schiebt das Raster nach links/rechts */
-            width: 45.0%;    /* Macht das gesamte Raster breiter/schmaler */
-            height: 66.0%;   /* Macht das gesamte Raster höher/flacher */
-
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            
-            /* Der Abstand ZWISCHEN den einzelnen Tasten: 
-               Erster Wert (1.5%) = vertikaler Abstand (oben/unten)
-               Zweiter Wert (2.5%) = horizontaler Abstand (links/rechts) */
-            gap: 1.5% 2.5%; 
-            
-            z-index: 2; 
-        }
-
-        .jukebox-button {
-            /* Wie gewünscht: Leicht rötlich eingefärbt */
-            background-color: rgba(255, 80, 80, 0.35); 
-            border: none;
-            border-radius: 20%; /* Macht die Ecken der roten Boxen rund, passend zur Jukebox */
-            cursor: pointer;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .jukebox-button:hover {
-            background-color: rgba(255, 80, 80, 0.6);
-            box-shadow: 0 0 12px rgba(255, 80, 80, 0.5); 
-        }
-
-        .jukebox-button:active {
-            background-color: rgba(255, 50, 50, 0.8);
-            transform: scale(0.92);
-        }
-
-        .response-area {
-            background-color: #2a2a2a;
-            color: #ffcccc;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 22px;
-            font-weight: bold;
-            text-align: center;
-            min-height: 30px;
-            box-shadow: inset 0 0 10px #000;
-            border: 1px solid #444;
-            width: 100%;
-            max-width: 600px;
-        }
-    </style>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/jukebox.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body>
 
-    <div class="jukebox-container">
-        <!-- Dateiname auf jukebox.jpg geändert -->
-        <img src="jukebox.jpg" alt="Jukebox" class="jukebox-image">
-
-        <div class="button-overlay">
-            <!-- Reihe 1 -->
-            <button class="jukebox-button" onclick="playSong('Track 01: Die Stille')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 02: Der Schatten')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 03: Geheime Klänge')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 04: Flüsternde Winde')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 05: Alte Lieder')"></button>
-            
-            <!-- Reihe 2 -->
-            <button class="jukebox-button" onclick="playSong('Track 06: Im Dunkeln')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 07: Der Schlüssel')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 08: Verborgene Wege')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 09: Zeitlose Noten')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 10: Der Zauber')"></button>
-            
-            <!-- Reihe 3 -->
-            <button class="jukebox-button" onclick="playSong('Track 11: Der Echoraum')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 12: Geheime Melodien')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 13: Die Ferne')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 14: Das Abenteuer')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 15: Die Suche')"></button>
-            
-            <!-- Reihe 4 -->
-            <button class="jukebox-button" onclick="playSong('Track 16: Ein Geheimnis')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 17: Die Verwandlung')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 18: Das Echo')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 19: Das Versprechen')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 20: Der Pfad')"></button>
-            
-            <!-- Reihe 5 -->
-            <button class="jukebox-button" onclick="playSong('Track 21: Der letzte Schritt')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 22: Die Ankunft')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 23: Die Wahrheit')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 24: Der Weg')"></button>
-            <button class="jukebox-button" onclick="playSong('Track 25: Der Sieg')"></button>
-        </div>
+  <!-- ========================================================
+       HEADER – Logo, Sprach-Toggle, Fortschritt
+  ======================================================== -->
+  <header id="site-header">
+    <div id="header-logo">
+      <h1 data-i18n="title">PROJEKT JUKEBOX</h1>
     </div>
 
-    <div class="response-area" id="responseArea">Wähle einen Titel...</div>
+    <div id="header-controls">
+      <!-- Sprach-Toggle -->
+      <button id="lang-toggle" data-i18n="lang-toggle" aria-label="Sprache wechseln / Switch language">
+        🇩🇪 DE | EN 🇬🇧
+      </button>
 
-    <script>
-        function playSong(songName) {
-            document.getElementById('responseArea').innerText = "▶ Spiele: " + songName;
-        }
-    </script>
+      <!-- Fortschrittsanzeige -->
+      <div id="progress-display" aria-label="Fortschrittsanzeige">
+        <span id="solved-count">0</span>
+        <span data-i18n="progress-separator"> / </span>
+        <span id="total-count">25</span>
+        <span data-i18n="progress-label"> gelöst</span>
+      </div>
+
+      <!-- Hinweis Lösungsschwelle -->
+      <div id="solve-hint" aria-label="Lösungshinweis">
+        <span data-i18n="solve-hint">21 zum Lösen</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       MAIN – Jukebox-Gehäuse mit U-förmigem LED-Equalizer
+  ======================================================== -->
+  <main id="main-content">
+    <!-- Jukebox-Gehäuse -->
+    <div id="jukebox-cabinet" aria-label="Jukebox-Gehäuse">
+
+      <!-- U-förmige LED-Leiste (Equalizer schmiegt sich direkt ans Gehäuse) -->
+      <div id="led-bar" aria-hidden="true">
+        <!-- Linker Equalizer (10 LEDs von unten nach oben) -->
+        <div class="led-strip led-strip-left" aria-label="Equalizer links">
+          <div class="led" id="led-l-1"></div>
+          <div class="led" id="led-l-2"></div>
+          <div class="led" id="led-l-3"></div>
+          <div class="led" id="led-l-4"></div>
+          <div class="led" id="led-l-5"></div>
+          <div class="led" id="led-l-6"></div>
+          <div class="led" id="led-l-7"></div>
+          <div class="led" id="led-l-8"></div>
+          <div class="led" id="led-l-9"></div>
+          <div class="led" id="led-l-10"></div>
+        </div>
+
+        <!-- Untere Leiste (12 LEDs) -->
+        <div class="led-strip led-strip-bottom" aria-label="LED Leiste unten">
+          <div class="led" id="led-b-1"></div>
+          <div class="led" id="led-b-2"></div>
+          <div class="led" id="led-b-3"></div>
+          <div class="led" id="led-b-4"></div>
+          <div class="led" id="led-b-5"></div>
+          <div class="led" id="led-b-6"></div>
+          <div class="led" id="led-b-7"></div>
+          <div class="led" id="led-b-8"></div>
+          <div class="led" id="led-b-9"></div>
+          <div class="led" id="led-b-10"></div>
+          <div class="led" id="led-b-11"></div>
+          <div class="led" id="led-b-12"></div>
+        </div>
+
+        <!-- Rechter Equalizer (10 LEDs von unten nach oben) -->
+        <div class="led-strip led-strip-right" aria-label="Equalizer rechts">
+          <div class="led" id="led-r-1"></div>
+          <div class="led" id="led-r-2"></div>
+          <div class="led" id="led-r-3"></div>
+          <div class="led" id="led-r-4"></div>
+          <div class="led" id="led-r-5"></div>
+          <div class="led" id="led-r-6"></div>
+          <div class="led" id="led-r-7"></div>
+          <div class="led" id="led-r-8"></div>
+          <div class="led" id="led-r-9"></div>
+          <div class="led" id="led-r-10"></div>
+        </div>
+      </div>
+
+      <div id="song-grid" aria-label="Song-Auswahl" role="list">
+        <!--
+          *** PLATZHALTER: 25 Song-Buttons werden hier von ui.js dynamisch eingefügt ***
+          Schritt 4 (UI-Logik) befüllt diesen Bereich mit folgendem Muster pro Eintrag:
+
+          <div class="song-entry" role="listitem" data-song-id="N">
+            <button class="song-button" id="song-btn-N" data-song-id="N" aria-label="Song N abspielen">
+              N
+            </button>
+            <div class="song-label" id="song-label-N">
+              <span class="song-label-text"><!-- blur bis gelöst --></span>
+            </div>
+          </div>
+        -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================
+       MODAL – Song-Eingabe (initial versteckt)
+  ======================================================== -->
+  <div id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div id="modal-box">
+
+      <h2 id="modal-title" data-i18n="modal-title">Song #<span id="modal-song-number"></span></h2>
+
+      <!-- Vorschau-Schild (blur solange ungelöst) -->
+      <div id="modal-label-preview" aria-label="Song-Schild">
+        <p id="modal-preview-title" class="blurred"></p>
+        <p id="modal-preview-artist" class="blurred"></p>
+      </div>
+
+      <!-- Eingabefeld -->
+      <label for="modal-input" id="modal-input-label" data-i18n="modal-input-label">
+        Titel oder Interpret eingeben:
+      </label>
+      <input
+        type="text"
+        id="modal-input"
+        name="modal-input"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        data-i18n-placeholder="modal-input-placeholder"
+        placeholder="Deine Antwort…"
+      />
+
+      <!-- Aktionsbuttons -->
+      <div id="modal-actions">
+        <button id="modal-submit" data-i18n="modal-submit">Bestätigen</button>
+        <button id="modal-close" data-i18n="modal-close">Schließen</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       KOORDINATEN-OVERLAY – erscheint ab 21 gelösten Songs (initial versteckt)
+  ======================================================== -->
+  <div id="coords-overlay" role="dialog" aria-modal="true" aria-labelledby="coords-title" hidden>
+    <div id="coords-box">
+
+      <h2 id="coords-title" data-i18n="coords-title">🎉 Zielkoordinaten</h2>
+      <p id="coords-subtitle" data-i18n="coords-subtitle">Du hast genug Songs erkannt!</p>
+
+      <div id="coords-display" aria-label="Koordinaten">
+        <!-- Koordinaten werden zur Laufzeit per solver.js dekodiert und eingefügt -->
+      </div>
+
+      <button id="coords-copy" data-i18n="coords-copy">Koordinaten kopieren</button>
+      <button id="coords-close" data-i18n="coords-close">Schließen</button>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       TOAST – Feedback-Meldung (initial versteckt)
+  ======================================================== -->
+  <div id="toast" role="status" aria-live="polite" hidden>
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- ========================================================
+       SCRIPTS – Ladereihenfolge gemäß architecture.md:
+       songs.js → i18n.js → audio.js → solver.js → state.js → ui.js
+  ======================================================== -->
+  <script src="js/songs.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/solver.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
 
 </body>
 </html>

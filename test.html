@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Test – MIDI51 Player</title>
+<style>
+  :root {
+    --bg-color: #1a0a00;
+    --card-bg: #2a1405;
+    --gold: #d4a017;
+    --gold-glow: rgba(212, 160, 23, 0.4);
+    --neon-red: #ff2244;
+    --neon-green: #00ff88;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--bg-color);
+    background-image: 
+      radial-gradient(circle at 50% 20%, #3a1800 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, #200800 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1.5rem;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--gold);
+  }
+
+  .container {
+    background: var(--card-bg);
+    border: 4px solid #441a08;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 
+      0 0 30px rgba(0,0,0,0.8),
+      0 0 15px var(--gold-glow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 0 10px var(--gold);
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: -0.5rem;
+    color: var(--gold);
+  }
+
+  .control-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  select {
+    width: 100%;
+    max-width: 480px;
+    padding: 0.75rem 1rem;
+    background: #120600;
+    color: #ffca36;
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+  }
+
+  select:focus, select:hover {
+    border-color: #ffe066;
+    box-shadow: 0 0 10px var(--gold-glow);
+  }
+
+  button#btn {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 5px solid #880011;
+    background: radial-gradient(circle at 35% 30%, #ff5577, #cc0022 55%, #660011);
+    box-shadow:
+      0 8px 0 #440008,
+      0 0 25px rgba(255, 34, 68, 0.5),
+      inset 0 5px 12px rgba(255,180,180,0.35);
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s, top 0.08s, background 0.2s;
+    position: relative;
+    top: 0;
+    outline: none;
+    margin: 0.5rem 0;
+  }
+
+  button#btn:active, button#btn.playing {
+    top: 6px;
+  }
+
+  button#btn.playing {
+    background: radial-gradient(circle at 35% 30%, #66ffaa, #00cc55 55%, #004422);
+    border-color: #00ff66;
+    box-shadow:
+      0 2px 0 #003311,
+      0 0 30px #00ff88;
+  }
+
+  #led-bar {
+    display: flex;
+    gap: 5px;
+    padding: 6px 12px;
+    background: #0f0500;
+    border-radius: 6px;
+    border: 1px solid #331200;
+  }
+
+  .led {
+    width: 12px;
+    height: 16px;
+    border-radius: 2px;
+    background: #330000;
+    transition: background 0.05s;
+  }
+
+  .led.on { background: #ff2244; box-shadow: 0 0 8px #ff2244; }
+  .led.on.green { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .volume-control input {
+    accent-color: var(--gold);
+    cursor: pointer;
+  }
+
+  #status {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #ffcc00;
+    min-height: 1.2rem;
+  }
+
+  .file-info {
+    background: #120600;
+    border: 1px dashed var(--gold);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #fff;
+  }
+
+  .fallback-btn {
+    background: #441a08;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: inherit;
+
+  }
+
+  .fallback-btn:hover {
+    background: #5b230b;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🎵 JUKEBOX MIDI PLAYER</h2>
+  <div class="subtitle">Direkte Wiedergabe aus Ordner <code>MIDI51/</code></div>
+
+  <div class="control-group">
+    <label for="song-select">Wähle eine der 51 MIDI-Dateien:</label>
+    <select id="song-select" onchange="onSongChange()"></select>
+  </div>
+
+  <div class="file-info">
+    Pfad: <span id="current-path">MIDI51/ABBA.Gimme gimme gimme L.mid</span>
+  </div>
+
+  <div>
+    <button id="btn" onclick="toggle()">▶</button>
+  </div>
+
+  <div class="volume-control">
+    <span>🔊 Lautstärke:</span>
+    <input type="range" id="vol-slider" min="0" max="100" value="70" oninput="updateVolume(this.value)">
+  </div>
+
+  <div id="led-bar">
+    <div class="led" id="l0"></div>
+    <div class="led" id="l1"></div>
+    <div class="led" id="l2"></div>
+    <div class="led" id="l3"></div>
+    <div class="led" id="l4"></div>
+    <div class="led" id="l5"></div>
+    <div class="led" id="l6"></div>
+    <div class="led" id="l7"></div>
+    <div class="led" id="l8"></div>
+    <div class="led" id="l9"></div>
+    <div class="led" id="l10"></div>
+    <div class="led" id="l11"></div>
+  </div>
+
+  <p id="status">Bereit zum Abspielen</p>
+
+  <div>
+    <button class="fallback-btn" onclick="document.getElementById('file-input').click()">📂 Manuelle MIDI-Datei wählen (file:// Fallback)</button>
+    <input type="file" id="file-input" style="display:none;" accept=".mid,.midi" onchange="onFilePicked(event)">
+  </div>
+</div>
+
+<script>
+// Liste aller 26 MIDI-Dateien im Ordner MIDI51 (JukeBox 2)
+const MIDI_FILES = [
+  "A1.mid",
+  "A2.mid",
+  "A3.mid",
+  "A4.mid",
+  "A5.mid",
+  "B1.mid",
+  "B2.mid",
+  "B3.mid",
+  "B4.mid",
+  "B5.mid",
+  "C1.mid",
+  "C2.mid",
+  "C3.mid",
+  "C4.mid",
+  "C5.mid",
+  "D1.mid",
+  "D2.mid",
+  "D3.mid",
+  "D4.mid",
+  "D5.mid",
+  "E1.mid",
+  "E2.mid",
+  "E3.mid",
+  "E4.mid",
+  "E5.mid",
+  "F1.mid"
+];
+
+// === Web Audio State ===
+let audioCtx = null;
+let masterGainNode = null;
+let currentMidiData = null;
+let isPlaying = false;
+let startTimeSec = 0;
+let nextNoteIndex = 0;
+let schedulerTimer = null;
+let ledInterval = null;
+let activeOscillators = [];
+let noiseBuffer = null;
+
+// Populate dropdown
+function populateDropdown() {
+  const select = document.getElementById('song-select');
+  select.innerHTML = '';
+  MIDI_FILES.forEach((file, index) => {
+    const opt = document.createElement('option');
+    opt.value = file;
+    opt.textContent = `${index + 1}. ${file}`;
+    select.appendChild(opt);
+  });
+  select.value = "A1.mid";
+  updatePathDisplay();
+}
+
+function updatePathDisplay() {
+  const select = document.getElementById('song-select');
+  document.getElementById('current-path').textContent = `MIDI51/${select.value}`;
+}
+
+function onSongChange() {
+  if (isPlaying) stopSong();
+  currentMidiData = null;
+  updatePathDisplay();
+  document.getElementById('status').textContent = 'Bereit zum Abspielen';
+}
+
+function updateVolume(val) {
+  const gainVal = (val / 100) * 0.7;
+  if (masterGainNode) masterGainNode.gain.value = gainVal;
+}
+
+// Ensure AudioContext is initialized and resumed inside user gesture
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGainNode = audioCtx.createGain();
+    masterGainNode.gain.value = 0.5;
+    masterGainNode.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+// Generate White Noise Buffer for Percussion
+function getNoiseBuffer() {
+  if (!noiseBuffer && audioCtx) {
+    const sr = audioCtx.sampleRate;
+    noiseBuffer = audioCtx.createBuffer(1, sr * 0.3, sr);
+    const d = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  return noiseBuffer;
+}
+
+// Accurate Binary MIDI Parser
+function parseMidiBuffer(arrayBuffer) {
+  const data = new Uint8Array(arrayBuffer);
+  let pos = 0;
+
+  function readUint32() {
+    const v = (data[pos] << 24) | (data[pos+1] << 16) | (data[pos+2] << 8) | data[pos+3];
+    pos += 4;
+    return v >>> 0;
+  }
+
+  function readUint16() {
+    const v = (data[pos] << 8) | data[pos+1];
+    pos += 2;
+    return v;
+  }
+
+  function readVLQ() {
+    let v = 0;
+    while (pos < data.length) {
+      const b = data[pos++];
+      v = (v << 7) | (b & 0x7F);
+      if (!(b & 0x80)) break;
+    }
+    return v;
+  }
+
+  // Header check: "MThd"
+  if (data[0] !== 0x4D || data[1] !== 0x54 || data[2] !== 0x68 || data[3] !== 0x64) {
+    throw new Error('Ungültiger MIDI-Header');
+  }
+  pos = 4;
+  const headerLen = readUint32();
+  const format = readUint16();
+  const ntracks = readUint16();
+  const division = readUint16();
+
+  if (headerLen > 6) pos += (headerLen - 6);
+
+  const tempoChanges = [{ tick: 0, usPerQuarter: 500000 }];
+  const rawNotes = [];
+
+  for (let trk = 0; trk < ntracks; trk++) {
+    if (pos >= data.length) break;
+    if (data[pos] !== 0x4D || data[pos+1] !== 0x54 || data[pos+2] !== 0x72 || data[pos+3] !== 0x6B) {
+      pos++;
+      continue;
+    }
+    pos += 4;
+    const trkLen = readUint32();
+    const trkEnd = pos + trkLen;
+
+    let currTick = 0;
+    let runningStatus = 0;
+    const activeNotes = new Map();
+
+    while (pos < trkEnd && pos < data.length) {
+      const delta = readVLQ();
+      currTick += delta;
+
+      let b = data[pos];
+      let status = 0;
+      if (b & 0x80) {
+        status = b;
+        pos++;
+      } else {
+        status = runningStatus;
+      }
+      runningStatus = status;
+
+      const cmd = status & 0xF0;
+      const channel = status & 0x0F;
+
+      if (cmd === 0x90) { // Note On
+        const key = data[pos++];
+        const vel = data[pos++];
+        const id = `${channel}_${key}`;
+        if (vel > 0) {
+          activeNotes.set(id, { startTick: currTick, vel });
+        } else {
+          if (activeNotes.has(id)) {
+            const act = activeNotes.get(id);
+            activeNotes.delete(id);
+            rawNotes.push({ channel, key, startTick: act.startTick, endTick: currTick, vel: act.vel });
+          }
+        }
+      } else if (cmd === 0x80) { // Note Off
+        const key = data[pos++];
+        const vel = data[pos++];
+        const id = `${channel}_${key}`;
+        if (activeNotes.has(id)) {
+          const act = activeNotes.get(id);
+          activeNotes.delete(id);
+          rawNotes.push({ channel, key, startTick: act.startTick, endTick: currTick, vel: act.vel });
+        }
+      } else if (cmd === 0xA0 || cmd === 0xB0 || cmd === 0xE0) {
+        pos += 2;
+      } else if (cmd === 0xC0 || cmd === 0xD0) {
+        pos += 1;
+      } else if (status === 0xFF) { // Meta Event
+        const metaType = data[pos++];
+        const length = readVLQ();
+        if (metaType === 0x51 && length === 3) {
+          const usPerQuarter = (data[pos] << 16) | (data[pos+1] << 8) | data[pos+2];
+          tempoChanges.push({ tick: currTick, usPerQuarter });
+        }
+        pos += length;
+      } else if (status === 0xF0 || status === 0xF7) { // SysEx
+        const length = readVLQ();
+        pos += length;
+      }
+    }
+    pos = trkEnd;
+  }
+
+  tempoChanges.sort((a, b) => a.tick - b.tick);
+
+  function tickToSeconds(targetTick) {
+    let sec = 0.0;
+    let lastTick = 0;
+    let lastUs = 500000;
+    for (const tc of tempoChanges) {
+      if (targetTick <= tc.tick) break;
+      sec += ((tc.tick - lastTick) / division) * (lastUs / 1000000.0);
+      lastTick = tc.tick;
+      lastUs = tc.usPerQuarter;
+    }
+    sec += ((targetTick - lastTick) / division) * (lastUs / 1000000.0);
+    return sec;
+  }
+
+  let maxSec = 0;
+  const notes = [];
+  for (const n of rawNotes) {
+    const sSec = tickToSeconds(n.startTick);
+    const eSec = tickToSeconds(n.endTick);
+    const durSec = Math.max(0.06, eSec - sSec);
+    notes.push({ channel: n.channel, key: n.key, start: sSec, dur: durSec, vel: n.vel });
+    if (sSec + durSec > maxSec) maxSec = sSec + durSec;
+  }
+
+  notes.sort((a, b) => a.start - b.start);
+  return { duration: maxSec, notes };
+}
+
+// Schedule single note using Web Audio API
+function scheduleNote(n, time) {
+  if (time < audioCtx.currentTime) return;
+  const velGain = (n.vel / 127.0) * 0.35;
+
+  // Drum Channel (channel index 9)
+  if (n.channel === 9) {
+    if (n.key === 35 || n.key === 36) { // Kick
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(150, time);
+      osc.frequency.exponentialRampToValueAtTime(30, time + 0.08);
+      g.gain.setValueAtTime(velGain * 1.6, time);
+      g.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+      osc.connect(g);
+      g.connect(masterGainNode);
+      osc.start(time);
+      osc.stop(time + 0.11);
+      activeOscillators.push(osc);
+    } else { // Snare / Hi-Hat
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = getNoiseBuffer();
+      const g = audioCtx.createGain();
+      const dur = (n.key >= 42 && n.key <= 46) ? 0.04 : 0.12;
+      g.gain.setValueAtTime(velGain * 0.9, time);
+      g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+      noise.connect(g);
+      g.connect(masterGainNode);
+      noise.start(time);
+      noise.stop(time + dur + 0.01);
+      activeOscillators.push(noise);
+    }
+    return;
+  }
+
+  // Melodic Channel
+  const freq = 440 * Math.pow(2, (n.key - 69) / 12);
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  const waveforms = ['sawtooth', 'square', 'triangle', 'sine', 'sawtooth', 'square'];
+  osc.type = waveforms[n.channel % waveforms.length];
+  osc.frequency.value = freq;
+
+  const attack = 0.01;
+  const release = Math.min(0.18, n.dur * 0.4);
+  
+  gain.gain.setValueAtTime(0, time);
+  gain.gain.linearRampToValueAtTime(velGain, time + attack);
+  gain.gain.setValueAtTime(velGain * 0.8, time + Math.max(attack, n.dur - release));
+  gain.gain.exponentialRampToValueAtTime(0.001, time + n.dur + release);
+
+  osc.connect(gain);
+  gain.connect(masterGainNode);
+
+  osc.start(time);
+  osc.stop(time + n.dur + release + 0.05);
+  activeOscillators.push(osc);
+}
+
+async function toggle() {
+  initAudio();
+  if (isPlaying) {
+    stopSong();
+  } else {
+    await startSong();
+  }
+}
+
+async function startSong() {
+  const select = document.getElementById('song-select');
+  const fileName = select.value;
+  const relPath = 'MIDI51/' + fileName;
+
+  document.getElementById('status').textContent = `Lade MIDI: ${fileName}...`;
+
+  try {
+    if (!currentMidiData) {
+      const resp = await fetch('MIDI51/' + encodeURIComponent(fileName));
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const arrayBuf = await resp.arrayBuffer();
+      currentMidiData = parseMidiBuffer(arrayBuf);
+    }
+
+    isPlaying = true;
+    nextNoteIndex = 0;
+    startTimeSec = audioCtx.currentTime + 0.1;
+
+    const btn = document.getElementById('btn');
+    btn.textContent = '■';
+    btn.classList.add('playing');
+    document.getElementById('status').textContent = `Spielt: ${fileName} (${currentMidiData.notes.length} Noten)`;
+    startLedAnimation(true);
+
+    clearInterval(schedulerTimer);
+    schedulerTimer = setInterval(() => {
+      if (!isPlaying || !currentMidiData) return;
+      const elapsed = audioCtx.currentTime - startTimeSec;
+      const lookahead = elapsed + 1.0;
+
+      while (nextNoteIndex < currentMidiData.notes.length && currentMidiData.notes[nextNoteIndex].start <= lookahead) {
+        const note = currentMidiData.notes[nextNoteIndex++];
+        scheduleNote(note, startTimeSec + note.start);
+      }
+
+      if (elapsed >= currentMidiData.duration + 0.5 || (nextNoteIndex >= currentMidiData.notes.length && elapsed > currentMidiData.duration)) {
+        stopSong();
+        document.getElementById('status').textContent = 'Wiedergabe beendet';
+      }
+    }, 40);
+
+  } catch (err) {
+    console.error('Playback Error:', err);
+    document.getElementById('status').textContent = '⚠️ Hinweis: Auf file:// bitte den Button unten nutzen';
+  }
+}
+
+function stopSong() {
+  isPlaying = false;
+  clearInterval(schedulerTimer);
+  clearInterval(ledInterval);
+
+  activeOscillators.forEach(o => { try { o.stop(); } catch(e){} });
+  activeOscillators = [];
+
+  document.querySelectorAll('.led').forEach(l => l.className = 'led');
+  const btn = document.getElementById('btn');
+  btn.textContent = '▶';
+  btn.classList.remove('playing');
+  if (document.getElementById('status').textContent.startsWith('Spielt')) {
+    document.getElementById('status').textContent = 'Bereit zum Abspielen';
+  }
+}
+
+function onFilePicked(event) {
+  initAudio();
+  const file = event.target.files[0];
+  if (!file) return;
+  if (isPlaying) stopSong();
+  document.getElementById('status').textContent = `Lade lokale Datei: ${file.name}...`;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      currentMidiData = parseMidiBuffer(e.target.result);
+      document.getElementById('status').textContent = `Geladen: ${file.name} (${currentMidiData.notes.length} Noten)`;
+      startSong();
+    } catch(err) {
+      document.getElementById('status').textContent = 'Fehler beim Parsen der MIDI-Datei';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function startLedAnimation(green) {
+  const leds = document.querySelectorAll('.led');
+  const cls = green ? 'led on green' : 'led on';
+  clearInterval(ledInterval);
+  let step = 0;
+  ledInterval = setInterval(() => {
+    leds.forEach(l => l.className = 'led');
+    const pat = [
+      [0,1,2], [1,2,3], [2,3,4], [3,4,5],
+      [4,5,6], [5,6,7], [6,7,8], [7,8,9],
+      [8,9,10],[9,10,11],[10,11],[11],
+      [9,10,11],[8,9],[7,8,9],[6,7,8]
+    ];
+    const active = pat[step % pat.length];
+    active.forEach(i => { if (leds[i]) leds[i].className = cls; });
+    step++;
+  }, 80);
+}
+
+document.addEventListener('DOMContentLoaded', populateDropdown);
+</script>
+</body>
+</html>
