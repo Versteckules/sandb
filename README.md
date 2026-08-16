@@ -69,7 +69,7 @@ jukeBox/
 │   ├── solver.js        # String-Normalisierung, Levenshtein & Antwortprüfung
 │   ├── state.js         # Fortschritts-Verwaltung der gelösten Songs
 │   └── ui.js            # DOM-Manipulation, Modal-Steuerung & Overlay Logic
-└── MIDI51/              # Synthesizer MIDI-Audio-Dateien (26 Songs)
+└── MIDI51/              # Synthesizer MIDI-Audio-Dateien (25 Songs)
 ```
 
 ---

@@ -1,0 +1,497 @@
+/* ==========================================================================
+   responsive.css
+   Responsive-Regeln & Mobile-Breakpoints für das Jukebox-Layout
+   Reihenfolge: jukebox.css → responsive.css (laut architecture.md)
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   0. Touch-Action global – verhindert Doppeltipp-Zoom auf mobilen Geräten
+      (WCAG 2.5.5: Touch Target – mind. 44 × 44 px bei max-width 480px)
+   -------------------------------------------------------------------------- */
+.song-button,
+#modal-submit,
+#modal-close,
+#coords-copy,
+#coords-close,
+#lang-toggle {
+  touch-action: manipulation;
+}
+
+
+/* ==========================================================================
+   BREAKPOINT 1 – Tablet / Smartphone  (max-width: 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* --- Body ---------------------------------------------------------------- */
+  body {
+    padding: 0 8px 32px;
+  }
+
+  /* --- Header (#site-header) ----------------------------------------------- */
+  #site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 14px 0 12px;
+  }
+
+  #header-logo h1 {
+    font-size: clamp(0.48rem, 3.5vw, 0.75rem);
+    letter-spacing: 1px;
+  }
+
+  #header-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  #progress-display {
+    font-size: 0.42rem;
+    padding: 5px 8px;
+  }
+
+  #solve-hint {
+    font-size: 0.36rem;
+  }
+
+  #lang-toggle {
+    font-size: 0.44rem;
+    padding: 7px 10px;
+  }
+
+  /* --- Jukebox-Gehäuse (#jukebox-cabinet) ---------------------------------- */
+  #jukebox-cabinet {
+    width: 100%;
+    max-width: 100%;       /* volle Breite */
+    margin: 16px auto 0;
+    padding: 20px 16px 28px;
+    border-radius: 32px 32px 12px 12px;
+
+    /* Etwas schlankere Schatten-Stapel für Performance */
+    box-shadow:
+      0 0 0 4px #a0a0a0,
+      0 0 0 6px #606060,
+      0 0 0 8px #d0d0d0,
+      0 16px 40px rgba(0,0,0,0.9),
+      inset 0 0 40px rgba(212,160,23,0.05),
+      inset 0 2px 0 rgba(255,255,255,0.12);
+  }
+
+  /* Chrom-Leiste oben – etwas niedriger */
+  #jukebox-cabinet::before {
+    height: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* Gold-Linie unten */
+  #jukebox-cabinet::after {
+    margin-top: 22px;
+  }
+
+  /* --- U-förmige LED-Leiste (#led-bar schmiegt sich ans Gehäuse an) ---------- */
+  #jukebox-cabinet {
+    padding: 24px 22px 24px 22px;
+  }
+
+  .led-strip-left,
+  .led-strip-right {
+    width: 12px;
+    top: 48px;
+    bottom: 18px;
+    padding: 4px 2px;
+    gap: 2px;
+  }
+
+  .led-strip-left {
+    left: 5px;
+  }
+
+  .led-strip-right {
+    right: 5px;
+  }
+
+  .led-strip-bottom {
+    height: 12px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    padding: 2px 4px;
+    gap: 2px;
+  }
+
+  /* --- Song-Grid (#song-grid) --------------------------------------------- */
+  #song-grid {
+    grid-template-columns: 1fr 1fr;   /* weiterhin 2 Spalten */
+    gap: 8px 12px;                    /* kleinere Abstände */
+  }
+
+  /* --- Song-Entries (.song-entry) ------------------------------------------ */
+  .song-entry {
+    grid-template-columns: 46px 1fr;
+    gap: 8px;
+    padding: 5px 6px;
+  }
+
+  /* --- Song-Buttons (.song-button) ---------------------------------------- */
+  .song-button {
+    width: 40px;
+    height: 40px;
+    font-size: 0.4rem;
+    border-width: 2px;
+  }
+
+  /* --- Song-Labels (.song-label) ------------------------------------------ */
+  .song-label {
+    padding: 6px 8px;
+    min-height: 36px;
+  }
+
+  .song-label-text {
+    font-size: 0.34rem;
+  }
+
+  .song-label-title {
+    font-size: 0.37rem;
+    margin-bottom: 2px;
+  }
+
+  .song-label-artist {
+    font-size: 0.31rem;
+  }
+
+  /* --- Modal (#modal-overlay .modal / #modal-box) -------------------------- */
+  #modal-overlay {
+    padding: 10px;
+  }
+
+  #modal-box {
+    width: 95vw;
+    max-width: 95vw;
+    padding: 24px 18px;
+    border-radius: 12px;
+  }
+
+  #modal-title {
+    font-size: 0.58rem;
+    margin-bottom: 14px;
+  }
+
+  #modal-label-preview {
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+
+  #modal-preview-title,
+  #modal-preview-artist {
+    font-size: 0.44rem;
+  }
+
+  #modal-preview-artist {
+    font-size: 0.37rem;
+  }
+
+  #modal-input {
+    font-size: 0.48rem;
+    padding: 10px 12px;
+  }
+
+  #modal-submit,
+  #modal-close {
+    font-size: 0.4rem;
+    padding: 9px 14px;
+  }
+
+  /* --- Koordinaten-Box (#coords-box) --------------------------------------- */
+  #coords-box {
+    padding: 28px 20px;
+    max-width: 95vw;
+  }
+
+  #coords-title {
+    font-size: clamp(0.48rem, 3vw, 0.75rem);
+  }
+
+  #coords-display {
+    font-size: clamp(0.52rem, 3.5vw, 0.85rem);
+    padding: 14px;
+    letter-spacing: 2px;
+  }
+
+  /* --- Toast (#toast) ------------------------------------------------------- */
+  #toast {
+    font-size: 0.42rem;
+    padding: 8px 16px;
+    white-space: normal;
+    max-width: 90vw;
+    text-align: center;
+  }
+}
+
+
+/* ==========================================================================
+   BREAKPOINT 2 – Kleines Smartphone  (max-width: 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+
+  /* --- Body ---------------------------------------------------------------- */
+  body {
+    padding: 0 6px 24px;
+  }
+
+  /* --- Header -------------------------------------------------------------- */
+  #site-header {
+    padding: 10px 0 10px;
+    gap: 6px;
+  }
+
+  #header-logo h1 {
+    font-size: clamp(0.4rem, 4vw, 0.6rem);
+  }
+
+  #header-controls {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  #progress-display {
+    font-size: 0.38rem;
+    padding: 4px 7px;
+  }
+
+  #solve-hint {
+    font-size: 0.32rem;
+    display: none; /* Platz sparen auf kleinstem Viewport */
+  }
+
+  #lang-toggle {
+    font-size: 0.4rem;
+    padding: 6px 9px;
+  }
+
+  /* --- Jukebox-Gehäuse ----------------------------------------------------- */
+  #jukebox-cabinet {
+    padding: 14px 10px 20px;
+    border-radius: 20px 20px 8px 8px;
+    box-shadow:
+      0 0 0 3px #a0a0a0,
+      0 0 0 5px #606060,
+      0 10px 30px rgba(0,0,0,0.9),
+      inset 0 2px 0 rgba(255,255,255,0.1);
+  }
+
+  #jukebox-cabinet::before {
+    height: 10px;
+    margin-bottom: 14px;
+  }
+
+  #jukebox-cabinet::after {
+    margin-top: 16px;
+    width: 90%;
+  }
+
+  /* --- Song-Grid: 1 Spalte ------------------------------------------------- */
+  /* Alternativ wählbar: 2 kompakte Spalten → Kommentar tauschen             */
+  #song-grid {
+    grid-template-columns: 1fr;       /* 1 Spalte; Button + Label nebeneinander */
+    gap: 6px 0;
+  }
+
+  /*
+   * Alternativ: 2 kompakte Spalten (je Button+Label als Block)
+   * Um diese Variante zu aktivieren, obige Regel auskommentieren und
+   * folgendes einkommentieren:
+   *
+   * #song-grid {
+   *   grid-template-columns: 1fr 1fr;
+   *   gap: 6px 8px;
+   * }
+   */
+
+  /* --- Song-Entries -------------------------------------------------------- */
+  .song-entry {
+    grid-template-columns: 48px 1fr;  /* Button + Label bleiben nebeneinander */
+    gap: 6px;
+    padding: 4px 6px;
+  }
+
+  /* --- Song-Buttons: Touch-freundlich (WCAG 2.5.5: min. 44 × 44 px) ------- */
+  .song-button {
+    width: 44px;
+    height: 44px;
+    font-size: 0.38rem;
+    border-width: 2px;
+  }
+
+  /* Alle Song-Buttons rund */
+  .song-entry:nth-child(even) .song-button {
+    border-radius: 50%;
+  }
+
+  /* --- Song-Labels --------------------------------------------------------- */
+  .song-label {
+    padding: 5px 6px;
+    min-height: 44px;               /* Gleiche Mindesthöhe wie Button */
+  }
+
+  .song-label-text {
+    font-size: 0.3rem;
+  }
+
+  .song-label-title {
+    font-size: 0.32rem;
+    margin-bottom: 2px;
+  }
+
+  .song-label-artist {
+    font-size: 0.28rem;
+  }
+
+  /* --- LED-Leiste: schmiegt sich an kleines Gehäuse an --------------------- */
+  #jukebox-cabinet {
+    padding: 16px 14px 18px 14px;
+  }
+
+  .led-strip-left,
+  .led-strip-right {
+    width: 8px;
+    top: 36px;
+    bottom: 12px;
+    padding: 2px 1px;
+    gap: 1px;
+    border-radius: 4px;
+  }
+
+  .led-strip-left {
+    left: 3px;
+  }
+
+  .led-strip-right {
+    right: 3px;
+  }
+
+  .led-strip-bottom {
+    height: 8px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    padding: 1px 2px;
+    gap: 1px;
+    border-radius: 4px;
+  }
+
+  /* --- Modal --------------------------------------------------------------- */
+  #modal-box {
+    width: 95vw;
+    max-width: 95vw;
+    padding: 18px 14px;
+    border-radius: 10px;
+  }
+
+  #modal-title {
+    font-size: 0.5rem;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  #modal-label-preview {
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    min-height: 50px;
+  }
+
+  #modal-preview-title {
+    font-size: 0.4rem;
+  }
+
+  #modal-preview-artist {
+    font-size: 0.34rem;
+  }
+
+  #modal-input {
+    font-size: 1rem;          /* ≥ 16px verhindert iOS-Auto-Zoom beim Focus */
+    padding: 10px 10px;
+    margin-bottom: 12px;
+  }
+
+  #modal-submit,
+  #modal-close {
+    font-size: 0.38rem;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  /* --- Koordinaten-Box ----------------------------------------------------- */
+  #coords-box {
+    padding: 22px 14px;
+    border-radius: 14px;
+  }
+
+  #coords-subtitle {
+    font-size: 0.36rem;
+    margin-bottom: 20px;
+  }
+
+  #coords-display {
+    font-size: clamp(0.48rem, 4vw, 0.75rem);
+    letter-spacing: 1px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  #coords-copy,
+  #coords-close {
+    font-size: 0.38rem;
+    padding: 10px 12px;
+    min-height: 44px;
+    margin: 4px 4px 0;
+  }
+
+  /* --- Toast --------------------------------------------------------------- */
+  #toast {
+    font-size: 0.38rem;
+    top: 10px;
+    padding: 7px 14px;
+  }
+}
+
+
+/* ==========================================================================
+   OPTIONAL – Helles Farbschema  (prefers-color-scheme: light)
+   Leichte Anpassungen; das Retro-Dunkel-Design bleibt weitgehend erhalten.
+   ========================================================================== */
+@media (prefers-color-scheme: light) {
+
+  :root {
+    /* Etwas hellerer Hintergrund, satt statt stockdunkel */
+    --color-bg:        #2a1200;
+    --color-panel-bg:  #1e0e00;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    /* Etwas mehr Kontrast im Hintergrundmuster */
+    background-image:
+      radial-gradient(ellipse at 20% 50%, #3d1a00 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, #3d1a00 0%, transparent 60%),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 40px,
+        rgba(0,0,0,0.06) 40px,
+        rgba(0,0,0,0.06) 41px
+      );
+  }
+
+  /* Modal-Overlay weniger dunkel, besser lesbar im hellen Kontext */
+  #modal-overlay {
+    background: rgba(20, 8, 0, 0.65);
+  }
+
+  /* Koordinaten-Overlay etwas transparenter */
+  #coords-overlay {
+    background: rgba(15, 6, 0, 0.78);
+  }
+}

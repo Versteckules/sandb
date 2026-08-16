@@ -298,134 +298,129 @@ Songs-Array (vollständig):
 
 const SONGS = [
   // Song 1 (A1)
-  { id:1, display:{ title:enc("The Winner Takes It All"), artist:enc("ABBA") },
-    answers:[ enc("the winner takes it all"), enc("winner takes it all"), enc("abba") ],
+  { id:1, display:{ title:enc("Let It Be"), artist:enc("The Beatles") },
+    answers:[ enc("let it be"), enc("the beatles"), enc("beatles") ],
     midiFile: "MIDI51/A1.mid" },
 
   // Song 2 (A2)
-  { id:2, display:{ title:enc("Forever Young"), artist:enc("Alphaville") },
-    answers:[ enc("forever young"), enc("alphaville") ],
+  { id:2, display:{ title:enc("Lemon Tree"), artist:enc("Fools Garden") },
+    answers:[ enc("lemon tree"), enc("fools garden") ],
     midiFile: "MIDI51/A2.mid" },
 
   // Song 3 (A3)
-  { id:3, display:{ title:enc("Another Brick in the Wall"), artist:enc("Pink Floyd") },
-    answers:[ enc("another brick in the wall"), enc("pink floyd") ],
+  { id:3, display:{ title:enc("Eye of the Tiger"), artist:enc("Survivor") },
+    answers:[ enc("eye of the tiger"), enc("survivor") ],
     midiFile: "MIDI51/A3.mid" },
 
   // Song 4 (A4)
-  { id:4, display:{ title:enc("Total Eclipse of the Heart"), artist:enc("Bonnie Tyler") },
-    answers:[ enc("total eclipse of the heart"), enc("bonnie tyler") ],
+  { id:4, display:{ title:enc("Hallelujah"), artist:enc("Deep Purple") },
+    answers:[ enc("hallelujah"), enc("deep purple") ],
     midiFile: "MIDI51/A4.mid" },
 
   // Song 5 (A5)
-  { id:5, display:{ title:enc("Cotton Eye Joe"), artist:enc("Rednex") },
-    answers:[ enc("cotton eye joe"), enc("rednex") ],
+  { id:5, display:{ title:enc("Highway to Hell"), artist:enc("AC/DC") },
+    answers:[ enc("highway to hell"), enc("acdc"), enc("ac dc"), enc("ac/dc") ],
     midiFile: "MIDI51/A5.mid" },
 
   // Song 6 (B1)
-  { id:6, display:{ title:enc("Fortunate Son"), artist:enc("Creedence Clearwater Revival") },
-    answers:[ enc("fortunate son"), enc("creedence clearwater revival"), enc("ccr") ],
+  { id:6, display:{ title:enc("November Rain"), artist:enc("Guns N' Roses") },
+    answers:[ enc("november rain"), enc("guns n roses"), enc("guns and roses") ],
     midiFile: "MIDI51/B1.mid" },
 
   // Song 7 (B2)
-  { id:7, display:{ title:enc("Knockin' on Heaven's Door"), artist:enc("Guns N' Roses") },
-    answers:[ enc("knockin on heavens door"), enc("guns n roses"), enc("guns and roses") ],
+  { id:7, display:{ title:enc("Bohemian Rhapsody"), artist:enc("Queen") },
+    answers:[ enc("bohemian rhapsody"), enc("queen") ],
     midiFile: "MIDI51/B2.mid" },
 
   // Song 8 (B3)
-  { id:8, display:{ title:enc("Behind Blue Eyes"), artist:enc("Limp Bizkit") },
-    answers:[ enc("behind blue eyes"), enc("limp bizkit") ],
+  { id:8, display:{ title:enc("Mamma Mia"), artist:enc("ABBA") },
+    answers:[ enc("mamma mia"), enc("abba") ],
     midiFile: "MIDI51/B3.mid" },
 
   // Song 9 (B4)
-  { id:9, display:{ title:enc("What a Wonderful World"), artist:enc("Louis Armstrong") },
-    answers:[ enc("what a wonderful world"), enc("louis armstrong"), enc("armstrong") ],
+  { id:9, display:{ title:enc("Beat It"), artist:enc("Michael Jackson") },
+    answers:[ enc("beat it"), enc("michael jackson"), enc("jackson") ],
     midiFile: "MIDI51/B4.mid" },
 
   // Song 10 (B5)
-  { id:10, display:{ title:enc("Home Sweet Home"), artist:enc("Mötley Crüe") },
-    answers:[ enc("home sweet home"), enc("motley crue") ],
+  { id:10, display:{ title:enc("Smells Like Teen Spirit"), artist:enc("Nirvana") },
+    answers:[ enc("smells like teen spirit"), enc("nirvana") ],
     midiFile: "MIDI51/B5.mid" },
 
   // Song 11 (C1)
-  { id:11, display:{ title:enc("My Heart Will Go On"), artist:enc("Céline Dion") },
-    answers:[ enc("my heart will go on"), enc("celine dion"), enc("titanic") ],
+  { id:11, display:{ title:enc("Take Me Home, Country Roads"), artist:enc("John Denver") },
+    answers:[ enc("take me home country roads"), enc("country roads"), enc("john denver") ],
     midiFile: "MIDI51/C1.mid" },
 
   // Song 12 (C2)
-  { id:12, display:{ title:enc("The Sound of Silence"), artist:enc("Simon & Garfunkel") },
-    answers:[ enc("the sound of silence"), enc("sound of silence"), enc("simon and garfunkel"), enc("simon garfunkel") ],
+  { id:12, display:{ title:enc("We Are The Champions"), artist:enc("Queen") },
+    answers:[ enc("we are the champions"), enc("queen"), enc("champions") ],
     midiFile: "MIDI51/C2.mid" },
 
   // Song 13 (C3)
-  { id:13, display:{ title:enc("He's a Pirate"), artist:enc("Hans Zimmer") },
-    answers:[ enc("hes a pirate"), enc("hans zimmer"), enc("pirates of the caribbean") ],
+  { id:13, display:{ title:enc("Gangsta's Paradise"), artist:enc("Coolio") },
+    answers:[ enc("gangsta's paradise"), enc("gangsta paradise"), enc("coolio") ],
     midiFile: "MIDI51/C3.mid" },
 
   // Song 14 (C4)
-  { id:14, display:{ title:enc("Popcorn"), artist:enc("Hot Butter") },
-    answers:[ enc("popcorn"), enc("hot butter") ],
+  { id:14, display:{ title:enc("Creep"), artist:enc("Radiohead") },
+    answers:[ enc("creep"), enc("radiohead") ],
     midiFile: "MIDI51/C4.mid" },
 
   // Song 15 (C5)
-  { id:15, display:{ title:enc("Purple Rain"), artist:enc("Prince") },
-    answers:[ enc("purple rain"), enc("prince") ],
+  { id:15, display:{ title:enc("The Final Countdown"), artist:enc("Europe") },
+    answers:[ enc("the final countdown"), enc("final countdown"), enc("europe") ],
     midiFile: "MIDI51/C5.mid" },
 
   // Song 16 (D1)
-  { id:16, display:{ title:enc("Listen to Your Heart"), artist:enc("Roxette") },
-    answers:[ enc("listen to your heart"), enc("roxette") ],
+  { id:16, display:{ title:enc("Wonderwall"), artist:enc("Oasis") },
+    answers:[ enc("wonderwall"), enc("oasis") ],
     midiFile: "MIDI51/D1.mid" },
 
   // Song 17 (D2)
-  { id:17, display:{ title:enc("Hey Jude"), artist:enc("The Beatles") },
-    answers:[ enc("hey jude"), enc("the beatles"), enc("beatles") ],
+  { id:17, display:{ title:enc("Hotel California"), artist:enc("Eagles") },
+    answers:[ enc("hotel california"), enc("eagles") ],
     midiFile: "MIDI51/D2.mid" },
 
   // Song 18 (D3)
-  { id:18, display:{ title:enc("Yesterday"), artist:enc("The Beatles") },
-    answers:[ enc("yesterday"), enc("the beatles"), enc("beatles") ],
+  { id:18, display:{ title:enc("Gimme! Gimme! Gimme!"), artist:enc("ABBA") },
+    answers:[ enc("gimme gimme gimme"), enc("gimme"), enc("abba") ],
     midiFile: "MIDI51/D3.mid" },
 
   // Song 19 (D4)
-  { id:19, display:{ title:enc("Take My Breath Away"), artist:enc("Berlin") },
-    answers:[ enc("take my breath away"), enc("berlin"), enc("top gun") ],
+  { id:19, display:{ title:enc("Zombie"), artist:enc("The Cranberries") },
+    answers:[ enc("zombie"), enc("the cranberries"), enc("cranberries") ],
     midiFile: "MIDI51/D4.mid" },
 
   // Song 20 (D5)
-  { id:20, display:{ title:enc("We Didn't Start the Fire"), artist:enc("Billy Joel") },
-    answers:[ enc("we didnt start the fire"), enc("billy joel") ],
+  { id:20, display:{ title:enc("Californication"), artist:enc("Red Hot Chili Peppers") },
+    answers:[ enc("californication"), enc("red hot chili peppers"), enc("rhcp"), enc("chili peppers") ],
     midiFile: "MIDI51/D5.mid" },
 
   // Song 21 (E1)
-  { id:21, display:{ title:enc("We Will Rock You"), artist:enc("Queen") },
-    answers:[ enc("we will rock you"), enc("queen") ],
+  { id:21, display:{ title:enc("Jump"), artist:enc("Van Halen") },
+    answers:[ enc("jump"), enc("van halen") ],
     midiFile: "MIDI51/E1.mid" },
 
   // Song 22 (E2)
-  { id:22, display:{ title:enc("Sailing"), artist:enc("Rod Stewart") },
-    answers:[ enc("sailing"), enc("rod stewart") ],
+  { id:22, display:{ title:enc("House of the Rising Sun"), artist:enc("The Animals") },
+    answers:[ enc("house of the rising sun"), enc("the animals"), enc("animals") ],
     midiFile: "MIDI51/E2.mid" },
 
   // Song 23 (E3)
-  { id:23, display:{ title:enc("Paradise"), artist:enc("Coldplay") },
-    answers:[ enc("paradise"), enc("coldplay") ],
+  { id:23, display:{ title:enc("Nothing Else Matters"), artist:enc("Metallica") },
+    answers:[ enc("nothing else matters"), enc("metallica") ],
     midiFile: "MIDI51/E3.mid" },
 
   // Song 24 (E4)
-  { id:24, display:{ title:enc("Photograph"), artist:enc("Nickelback") },
-    answers:[ enc("photograph"), enc("nickelback") ],
+  { id:24, display:{ title:enc("Paradise City"), artist:enc("Guns N' Roses") },
+    answers:[ enc("paradise city"), enc("guns n roses"), enc("guns and roses") ],
     midiFile: "MIDI51/E4.mid" },
 
   // Song 25 (E5)
-  { id:25, display:{ title:enc("Let Her Go"), artist:enc("Passenger") },
-    answers:[ enc("let her go"), enc("passenger") ],
+  { id:25, display:{ title:enc("Wind of Change"), artist:enc("The Scorpions") },
+    answers:[ enc("wind of change"), enc("the scorpions"), enc("scorpions") ],
     midiFile: "MIDI51/E5.mid" },
-
-  // Song 26 (F1)
-  { id:26, display:{ title:enc("Sonne"), artist:enc("Rammstein") },
-    answers:[ enc("sonne"), enc("rammstein") ],
-    midiFile: "MIDI51/F1.mid" },
 ];
 
 HINWEIS:
@@ -903,33 +898,32 @@ function dec(s){return rot13(decodeURIComponent(escape(atob(s))))}
 dec(enc("Queen"))  // → "queen"
 ```
 
-### MIDI51 – Song-Mapping Übersicht (jukeBox_2)
+### MIDI51 – Song-Mapping Übersicht
 ```
 Song #  → MIDI-Datei (in MIDI51/)
- 1  ABBA – The Winner Takes It All           → A1.mid
- 2  Alphaville – Forever Young               → A2.mid
- 3  Pink Floyd – Another Brick in the Wall   → A3.mid
- 4  Bonnie Tyler – Total Eclipse of the Heart → A4.mid
- 5  Rednex – Cotton Eye Joe                  → A5.mid
- 6  CCR – Fortunate Son                      → B1.mid
- 7  Guns N' Roses – Knockin' on Heaven's Door → B2.mid
- 8  Limp Bizkit – Behind Blue Eyes           → B3.mid
- 9  Louis Armstrong – What a Wonderful World → B4.mid
-10  Mötley Crüe – Home Sweet Home            → B5.mid
-11  Céline Dion – My Heart Will Go On        → C1.mid
-12  Simon & Garfunkel – The Sound of Silence → C2.mid
-13  Hans Zimmer – He's a Pirate              → C3.mid
-14  Hot Butter – Popcorn                     → C4.mid
-15  Prince – Purple Rain                     → C5.mid
-16  Roxette – Listen to Your Heart           → D1.mid
-17  The Beatles – Hey Jude                   → D2.mid
-18  The Beatles – Yesterday                  → D3.mid
-19  Berlin – Take My Breath Away             → D4.mid
-20  Billy Joel – We Didn't Start the Fire    → D5.mid
-21  Queen – We Will Rock You                 → E1.mid
-22  Rod Stewart – Sailing                    → E2.mid
-23  Coldplay – Paradise                      → E3.mid
-24  Nickelback – Photograph                  → E4.mid
-25  Passenger – Let Her Go                   → E5.mid
-26  Rammstein – Sonne                        → F1.mid
+ 1  The Beatles – Let It Be          → A1.mid
+ 2  Fools Garden – Lemon Tree        → A2.mid
+ 3  Survivor – Eye of the Tiger      → A3.mid
+ 4  Deep Purple – Hallelujah         → A4.mid
+ 5  AC/DC – Highway to Hell          → A5.mid
+ 6  Guns N' Roses – November Rain    → B1.mid
+ 7  Queen – Bohemian Rhapsody        → B2.mid
+ 8  ABBA – Mamma Mia                 → B3.mid
+ 9  Michael Jackson – Beat It        → B4.mid
+10  Nirvana – Smells Like Teen Spirit → B5.mid
+11  John Denver – Country Roads      → C1.mid
+12  Queen – We Are The Champions     → C2.mid
+13  Coolio – Gangsta's Paradise       → C3.mid
+14  Radiohead – Creep                → C4.mid
+15  Europe – The Final Countdown     → C5.mid
+16  Oasis – Wonderwall               → D1.mid
+17  Eagles – Hotel California        → D2.mid
+18  ABBA – Gimme! Gimme! Gimme!      → D3.mid
+19  The Cranberries – Zombie         → D4.mid
+20  RHCP – Californication           → D5.mid
+21  Van Halen – Jump                 → E1.mid
+22  The Animals – House of Rising Sun → E2.mid
+23  Metallica – Nothing Else Matters → E3.mid
+24  Guns N' Roses – Paradise City    → E4.mid
+25  The Scorpions – Wind of Change   → E5.mid
 ```

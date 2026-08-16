@@ -263,44 +263,43 @@ const i18n = {
 
 ## Song-Liste (Referenz) + MIDI-Mapping
 
-> Alle 26 Songs – nur zur Referenz. Im Code ausschließlich über `enc()` verwenden!
+> Alle 25 Songs – nur zur Referenz. Im Code ausschließlich über `enc()` verwenden!
 > Mapping: Jeder Song ist einer konkreten Datei aus `MIDI51/` zugeordnet.
 
 | # | Interpret | Titel | MIDI-Datei in MIDI51/ |
 |---|-----------|-------|-----------------------|
-| 1 | ABBA | The Winner Takes It All | `A1.mid` |
-| 2 | Alphaville | Forever Young | `A2.mid` |
-| 3 | Pink Floyd | Another Brick in the Wall | `A3.mid` |
-| 4 | Bonnie Tyler | Total Eclipse of the Heart | `A4.mid` |
-| 5 | Rednex | Cotton Eye Joe | `A5.mid` |
-| 6 | Creedence Clearwater Revival | Fortunate Son | `B1.mid` |
-| 7 | Guns N' Roses | Knockin' on Heaven's Door | `B2.mid` |
-| 8 | Limp Bizkit | Behind Blue Eyes | `B3.mid` |
-| 9 | Louis Armstrong | What a Wonderful World | `B4.mid` |
-| 10 | Mötley Crüe | Home Sweet Home | `B5.mid` |
-| 11 | Céline Dion | My Heart Will Go On | `C1.mid` |
-| 12 | Simon & Garfunkel | The Sound of Silence | `C2.mid` |
-| 13 | Hans Zimmer | He's a Pirate | `C3.mid` |
-| 14 | Hot Butter | Popcorn | `C4.mid` |
-| 15 | Prince | Purple Rain | `C5.mid` |
-| 16 | Roxette | Listen to Your Heart | `D1.mid` |
-| 17 | The Beatles | Hey Jude | `D2.mid` |
-| 18 | The Beatles | Yesterday | `D3.mid` |
-| 19 | Berlin | Take My Breath Away | `D4.mid` |
-| 20 | Billy Joel | We Didn't Start the Fire | `D5.mid` |
-| 21 | Queen | We Will Rock You | `E1.mid` |
-| 22 | Rod Stewart | Sailing | `E2.mid` |
-| 23 | Coldplay | Paradise | `E3.mid` |
-| 24 | Nickelback | Photograph | `E4.mid` |
-| 25 | Passenger | Let Her Go | `E5.mid` |
-| 26 | Rammstein | Sonne | `F1.mid` |
+| 1 | The Beatles | Let It Be | `A1.mid` |
+| 2 | Fools Garden | Lemon Tree | `A2.mid` |
+| 3 | Survivor | Eye of the Tiger | `A3.mid` |
+| 4 | Deep Purple | Hallelujah | `A4.mid` |
+| 5 | AC/DC | Highway to Hell | `A5.mid` |
+| 6 | Guns N' Roses | November Rain | `B1.mid` |
+| 7 | Queen | Bohemian Rhapsody | `B2.mid` |
+| 8 | ABBA | Mamma Mia | `B3.mid` |
+| 9 | Michael Jackson | Beat It | `B4.mid` |
+| 10 | Nirvana | Smells Like Teen Spirit | `B5.mid` |
+| 11 | John Denver | Take Me Home, Country Roads | `C1.mid` |
+| 12 | Queen | We Are The Champions | `C2.mid` |
+| 13 | Coolio | Gangsta's Paradise | `C3.mid` |
+| 14 | Radiohead | Creep | `C4.mid` |
+| 15 | Europe | The Final Countdown | `C5.mid` |
+| 16 | Oasis | Wonderwall | `D1.mid` |
+| 17 | Eagles | Hotel California | `D2.mid` |
+| 18 | ABBA | Gimme! Gimme! Gimme! | `D3.mid` |
+| 19 | The Cranberries | Zombie | `D4.mid` |
+| 20 | Red Hot Chili Peppers | Californication | `D5.mid` |
+| 21 | Van Halen | Jump | `E1.mid` |
+| 22 | The Animals | House of the Rising Sun | `E2.mid` |
+| 23 | Metallica | Nothing Else Matters | `E3.mid` |
+| 24 | Guns N' Roses | Paradise City | `E4.mid` |
+| 25 | The Scorpions | Wind of Change | `E5.mid` |
 
 ### Akzeptierte Antwort-Varianten (Beispiele)
 | Song | Antwort-Varianten in answers[] |
 |------|--------------------------------|
-| 1  | "the winner takes it all", "winner takes it all", "abba" |
-| 3  | "another brick in the wall", "pink floyd" |
-| 6  | "fortunate son", "creedence clearwater revival", "ccr" |
-| 11 | "my heart will go on", "celine dion", "titanic" |
-| 12 | "the sound of silence", "sound of silence", "simon and garfunkel" |
-| 13 | "hes a pirate", "hans zimmer", "pirates of the caribbean" |
+| 4  | "hallelujah", "deep purple" |
+| 7  | "bohemian rhapsody", "queen" |
+| 12 | "we are the champions", "queen", "champions" |
+| 13 | "gangsta's paradise", "gangsta paradise", "coolio" |
+| 22 | "house of the rising sun", "the animals", "animals" |
+| 23 | "nothing else matters", "metallica" |
